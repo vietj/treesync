@@ -19,10 +19,11 @@
 
 package org.exoplatform.treesync;
 
-import javax.xml.soap.Node;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
+import org.exoplatform.treesync.lcs.ChangeIterator;
+import org.exoplatform.treesync.lcs.LCS;
+
+import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -92,10 +93,43 @@ public class Diff<N1, N2> {
     //
 
     //
-    ListIterator<N1> children1 = context1.model.getChildren(node1).listIterator();
-    ListIterator<N2> children2 = context2.model.getChildren(node2).listIterator();
+    List<N1> children1 = context1.model.getChildren(node1);
+    String[] childrenIds1 = ids(context1.model.getChildren(node1), context1.model);
+    List<N2> children2 = context2.model.getChildren(node2);
+    String[] childrenIds2 = ids(context2.model.getChildren(node2), context2.model);
 
     //
+    ChangeIterator<String> it = new LCS<String>().diff(childrenIds1, childrenIds2);
+    while (it.hasNext()) {
+      switch (it.next()) {
+        case KEEP:
+//          perform();
+          break;
+        case ADD:
+          //
+          break;
+        case REMOVE:
+          //
+          break;
+      }
+    }
+
+
   }
 
+  private <N> String[] ids(List<N> nodes, NodeModel<N> model) {
+    int size = nodes.size();
+    String[] ids = new String[size];
+    if (nodes instanceof RandomAccess) {
+      for (int i = 0;i < size;i++) {
+        ids[i] = model.getId(nodes.get(i));
+      }
+    } else {
+      int i = 0;
+      for (N node : nodes) {
+        ids[i++] = model.getId(node);
+      }
+    }
+    return ids;
+  }
 }

@@ -63,7 +63,7 @@ public class LCS<E> {
     this.n = -1;
   }
 
-  public final DiffIterator<E> diff(E[] elements1, E[] elements2) {
+  public final ChangeIterator<E> diff(E[] elements1, E[] elements2) {
     m = 1 + elements1.length;
     n = 1 + elements2.length;
     int s = m * n;
@@ -93,7 +93,7 @@ public class LCS<E> {
     }
 
     //
-    return new DiffIterator<E>(this, elements1, elements2);
+    return new ChangeIterator<E>(this, elements1, elements2);
   }
 
   protected boolean equals(E e1, E e2) {

@@ -21,8 +21,6 @@ package org.exoplatform.treesync.lcs;
 
 import junit.framework.TestCase;
 
-import java.util.List;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -37,14 +35,14 @@ public class LCSTestCase extends TestCase {
     return chars;
   }
 
-  private DiffIterator<Character> diff(String s1, String s2) {
+  private ChangeIterator<Character> diff(String s1, String s2) {
     Character[] c1 = chars(s1);
     Character[] c2 = chars(s2);
     return new LCS<Character>().diff(c1, c2);
   }
 
   public void test1() {
-    DiffIterator<Character> it = diff("", "a");
+    ChangeIterator<Character> it = diff("", "a");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
     assertEquals(ChangeType.ADD, it.next());
@@ -55,7 +53,7 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test2() {
-    DiffIterator<Character> it = diff("a", "");
+    ChangeIterator<Character> it = diff("a", "");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
     assertEquals(ChangeType.REMOVE, it.next());
@@ -66,7 +64,7 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test3() {
-    DiffIterator<Character> it = diff("a", "a");
+    ChangeIterator<Character> it = diff("a", "a");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
     assertEquals(ChangeType.KEEP, it.next());
@@ -77,7 +75,7 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test4() {
-    DiffIterator<Character> it = diff("a", "b");
+    ChangeIterator<Character> it = diff("a", "b");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
     assertEquals(ChangeType.ADD, it.next());
@@ -92,7 +90,7 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test5() {
-    DiffIterator<Character> it = diff("", "ab");
+    ChangeIterator<Character> it = diff("", "ab");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
     assertEquals(ChangeType.ADD, it.next());
@@ -107,7 +105,7 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test6() {
-    DiffIterator<Character> it = diff("abc", "dbe");
+    ChangeIterator<Character> it = diff("abc", "dbe");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
     assertEquals(ChangeType.ADD, it.next());

@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DiffIterator<E> implements Iterator<ChangeType> {
+public class ChangeIterator<E> implements Iterator<ChangeType> {
 
   /** . */
   private boolean buffered;
@@ -52,7 +52,7 @@ public class DiffIterator<E> implements Iterator<ChangeType> {
   /** . */
   private int j;
 
-  DiffIterator(LCS<E> lcs, E[] elements1, E[] elements2) {
+  ChangeIterator(LCS<E> lcs, E[] elements1, E[] elements2) {
     this.buffered = false;
     this.lcs = lcs;
     this.elements1 = elements1;
