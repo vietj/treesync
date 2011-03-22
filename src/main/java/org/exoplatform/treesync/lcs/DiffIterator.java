@@ -20,12 +20,16 @@
 package org.exoplatform.treesync.lcs;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class DiffIterator<E> implements Iterator<ChangeType> {
+
+  /** . */
+  private boolean buffered;
 
   /** . */
   private ChangeType type;
@@ -49,6 +53,7 @@ public class DiffIterator<E> implements Iterator<ChangeType> {
   private int j;
 
   DiffIterator(LCS<E> lcs, E[] elements1, E[] elements2) {
+    this.buffered = false;
     this.lcs = lcs;
     this.elements1 = elements1;
     this.elements2 = elements2;
@@ -64,37 +69,44 @@ public class DiffIterator<E> implements Iterator<ChangeType> {
     return element;
   }
 
-  public void iterate() {
-    E e1 = null;
-    E e2 = null;
-    if (i > 0 && j > 0 && lcs.equals(e1 = elements1[i - 1], e2 = elements2[j - 1])) {
-      type = ChangeType.KEEP;
-      element = e1;
-      i = i - 1;
-      j = j - 1;
-    } else {
-      int index1 = i + (j - 1) * lcs.m;
-      int index2 = i - 1 + j * lcs.m;
-      if (j > 0 && (i == 0  || lcs.matrix[index1] >= lcs.matrix[index2])) {
-        type = ChangeType.ADD;
-        element = e2 == null ? elements2[j - 1] : e2;
-        j = j - 1;
-      } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
-        type = ChangeType.REMOVE;
-        element = e1 == null ? elements1[i - 1] : e1;
+  public boolean hasNext() {
+    if (!buffered) {
+      E e1 = null;
+      E e2 = null;
+      if (i > 0 && j > 0 && lcs.equals(e1 = elements1[i - 1], e2 = elements2[j - 1])) {
+        type = ChangeType.KEEP;
+        element = e1;
         i = i - 1;
+        j = j - 1;
+        buffered = true;
       } else {
-        // Done
+        int index1 = i + (j - 1) * lcs.m;
+        int index2 = i - 1 + j * lcs.m;
+        if (j > 0 && (i == 0  || lcs.matrix[index1] >= lcs.matrix[index2])) {
+          type = ChangeType.ADD;
+          element = e2 == null ? elements2[j - 1] : e2;
+          j = j - 1;
+          buffered = true;
+        } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
+          type = ChangeType.REMOVE;
+          element = e1 == null ? elements1[i - 1] : e1;
+          i = i - 1;
+          buffered = true;
+        } else {
+          // Done
+        }
       }
     }
-  }
-
-  public boolean hasNext() {
-    return false;
+    return buffered;
   }
 
   public ChangeType next() {
-    return null;
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    } else {
+      buffered = false;
+      return type;
+    }
   }
 
   public void remove() {

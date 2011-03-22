@@ -29,8 +29,6 @@ public enum ChangeType {
 
   KEEP,
 
-  ADD,
-
-  DONE
+  ADD
 
 }
