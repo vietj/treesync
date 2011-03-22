@@ -76,9 +76,6 @@ public abstract class LCS<E> {
     return new DiffIterator<E>(this, elements1, elements2);
   }
 
-
-  //  public void backTrack()
-
   protected abstract boolean equals(E e1, E e2);
 
 }
