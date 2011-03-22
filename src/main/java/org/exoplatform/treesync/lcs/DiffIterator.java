@@ -69,6 +69,14 @@ public class DiffIterator<E> implements Iterator<ChangeType> {
     return element;
   }
 
+  public int getIndex1() {
+    return elements1.length - i;
+  }
+
+  public int getIndex2() {
+    return elements2.length - j;
+  }
+
   public boolean hasNext() {
     if (!buffered) {
       E e1 = null;

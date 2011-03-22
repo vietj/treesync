@@ -57,7 +57,7 @@ public class LCS<E> {
   /** . */
   int n;
 
-  protected LCS() {
+  public LCS() {
     this.matrix = EMPTY;
     this.m = -1;
     this.n = -1;
