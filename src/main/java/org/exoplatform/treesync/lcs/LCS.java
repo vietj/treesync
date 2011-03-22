@@ -19,11 +19,31 @@
 
 package org.exoplatform.treesync.lcs;
 
+import java.util.Comparator;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class LCS<E> {
+public class LCS<E> {
+
+  public static <E extends Comparable<E>> LCS<E> create() {
+    return new LCS<E>() {
+      @Override
+      protected boolean equals(E e1, E e2) {
+        return e1.compareTo(e2) == 0;
+      }
+    };
+  }
+
+  public static <E> LCS<E> create(final Comparator<E> comparator) {
+    return new LCS<E>() {
+      @Override
+      protected boolean equals(E e1, E e2) {
+        return comparator.compare(e1, e2) == 0;
+      }
+    };
+  }
 
   /** . */
   private static final int[] EMPTY = new int[0];
@@ -43,7 +63,7 @@ public abstract class LCS<E> {
     this.n = -1;
   }
 
-  public DiffIterator<E> diff(E[] elements1, E[] elements2) {
+  public final DiffIterator<E> diff(E[] elements1, E[] elements2) {
     m = 1 + elements1.length;
     n = 1 + elements2.length;
     int s = m * n;
@@ -76,6 +96,7 @@ public abstract class LCS<E> {
     return new DiffIterator<E>(this, elements1, elements2);
   }
 
-  protected abstract boolean equals(E e1, E e2);
-
+  protected boolean equals(E e1, E e2) {
+    return e1.equals(e2);
+  }
 }

@@ -40,12 +40,7 @@ public class LCSTestCase extends TestCase {
   private DiffIterator<Character> diff(String s1, String s2) {
     Character[] c1 = chars(s1);
     Character[] c2 = chars(s2);
-    return new LCS<Character>() {
-      @Override
-      protected boolean equals(Character e1, Character e2) {
-        return e1.equals(e2);
-      }
-    }.diff(c1, c2);
+    return new LCS<Character>().diff(c1, c2);
   }
 
   public void test1() {
