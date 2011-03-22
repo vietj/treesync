@@ -73,24 +73,24 @@ public class DiffIterator<E> implements Iterator<ChangeType> {
     if (!buffered) {
       E e1 = null;
       E e2 = null;
-      if (i > 0 && j > 0 && lcs.equals(e1 = elements1[i - 1], e2 = elements2[j - 1])) {
+      if (i > 0 && j > 0 && lcs.equals(e1 = elements1[elements1.length - i], e2 = elements2[elements2.length - j])) {
         type = ChangeType.KEEP;
         element = e1;
-        i = i - 1;
-        j = j - 1;
+        i--;
+        j--;
         buffered = true;
       } else {
         int index1 = i + (j - 1) * lcs.m;
         int index2 = i - 1 + j * lcs.m;
         if (j > 0 && (i == 0  || lcs.matrix[index1] >= lcs.matrix[index2])) {
           type = ChangeType.ADD;
-          element = e2 == null ? elements2[j - 1] : e2;
-          j = j - 1;
+          element = e2 == null ? elements2[elements2.length - j] : e2;
+          j--;
           buffered = true;
         } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
           type = ChangeType.REMOVE;
-          element = e1 == null ? elements1[i - 1] : e1;
-          i = i - 1;
+          element = e1 == null ? elements1[elements1.length - i] : e1;
+          i--;
           buffered = true;
         } else {
           // Done

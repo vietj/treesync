@@ -81,24 +81,24 @@ public class LCSTestCase extends TestCase {
   public void test5() {
     DiffIterator<Character> it = diff("", "ab");
     assertEquals(ChangeType.ADD, it.next());
-    assertEquals('b', (char)it.getElement());
-    assertEquals(ChangeType.ADD, it.next());
     assertEquals('a', (char)it.getElement());
+    assertEquals(ChangeType.ADD, it.next());
+    assertEquals('b', (char)it.getElement());
     assertFalse(it.hasNext());
   }
 
   public void test6() {
     DiffIterator<Character> it = diff("abc", "dbe");
     assertEquals(ChangeType.ADD, it.next());
-    assertEquals('e', (char)it.getElement());
-    assertEquals(ChangeType.REMOVE, it.next());
-    assertEquals('c', (char)it.getElement());
-    assertEquals(ChangeType.KEEP, it.next());
-    assertEquals('b', (char)it.getElement());
-    assertEquals(ChangeType.ADD, it.next());
     assertEquals('d', (char)it.getElement());
     assertEquals(ChangeType.REMOVE, it.next());
     assertEquals('a', (char)it.getElement());
+    assertEquals(ChangeType.KEEP, it.next());
+    assertEquals('b', (char)it.getElement());
+    assertEquals(ChangeType.ADD, it.next());
+    assertEquals('e', (char)it.getElement());
+    assertEquals(ChangeType.REMOVE, it.next());
+    assertEquals('c', (char)it.getElement());
     assertFalse(it.hasNext());
   }
 }

@@ -61,7 +61,7 @@ public abstract class LCS<E> {
       for (int j = 1;j < n;j++) {
         int index = i + j * m;
         int v;
-        if (equals(elements1[i - 1], elements2[j - 1])) {
+        if (equals(elements1[elements1.length - i], elements2[elements2.length - j])) {
           v = matrix[index - m - 1] + 1;
         } else {
           int v1 = matrix[index - 1];
