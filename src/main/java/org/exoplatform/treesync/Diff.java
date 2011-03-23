@@ -33,48 +33,14 @@ import java.util.RandomAccess;
 public class Diff<N1, N2> {
 
   /** . */
-  private final Context<N1> context1;
+  private final NodeContext<N1> context1;
 
   /** . */
-  private final Context<N2> context2;
+  private final NodeContext<N2> context2;
 
   public Diff(NodeModel<N1> model1, N1 root1, NodeModel<N2> model2, N2 root2) {
-    this.context1 = new Context<N1>(model1, root1);
-    this.context2 = new Context<N2>(model2, root2);
-  }
-
-  private static class Context<N> {
-
-    /** . */
-    private final NodeModel<N> model;
-
-    /** . */
-    private final N root;
-
-    private Context(NodeModel<N> model, N root) {
-      this.model = model;
-      this.root = root;
-    }
-
-    private N findById(String id) {
-      return findById(root, id);
-    }
-
-    private N findById(N node, String id) {
-      N found;
-      if (model.getId(node).equals(id)) {
-        found = node;
-      } else {
-        found = null;
-        for (N child : model.getChildren(node)) {
-          found = findById(child, id);
-          if (found != null) {
-            break;
-          }
-        }
-      }
-      return found;
-    }
+    this.context1 = new NodeContext<N1>(model1, root1);
+    this.context2 = new NodeContext<N2>(model2, root2);
   }
 
   public void perform(DiffHandler<N1, N2> handler) {
