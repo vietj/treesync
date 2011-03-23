@@ -22,6 +22,7 @@ package org.exoplatform.treesync;
 import org.exoplatform.treesync.lcs.ChangeIterator;
 import org.exoplatform.treesync.lcs.LCS;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
 
@@ -77,10 +78,12 @@ public class Diff<N1, N2> {
   }
 
   public void perform(DiffHandler<N1, N2> handler) {
-
+    perform(context1.root, context2.root, handler);
   }
 
-  public void perform(N1 node1, N2 node2, DiffHandler<N1, N2> handler) {
+  private void perform(N1 node1, N2 node2, DiffHandler<N1, N2> handler) {
+
+    handler.enter(node1);
 
     String id1 = context1.model.getId(node1);
     String id2 = context2.model.getId(node2);
@@ -95,25 +98,43 @@ public class Diff<N1, N2> {
     //
     List<N1> children1 = context1.model.getChildren(node1);
     String[] childrenIds1 = ids(context1.model.getChildren(node1), context1.model);
+    Iterator<N1> it1 = children1.iterator();
     List<N2> children2 = context2.model.getChildren(node2);
     String[] childrenIds2 = ids(context2.model.getChildren(node2), context2.model);
+    Iterator<N2> it2 = children2.iterator();
 
     //
     ChangeIterator<String> it = new LCS<String>().diff(childrenIds1, childrenIds2);
     while (it.hasNext()) {
       switch (it.next()) {
         case KEEP:
-//          perform();
+          perform(it1.next(), it2.next(), handler);
           break;
         case ADD:
-          //
+          it2.next();
+          N1 a = context1.findById(it.getElement());
+          N2 added = children2.get(it.getIndex2() - 1);
+          if (a != null) {
+            handler.movedIn(a);
+            perform(a, added, handler);
+          } else {
+            handler.added(added);
+          }
           break;
         case REMOVE:
-          //
+          it1.next();
+          N1 removed = children1.get(it.getIndex1() - 1);
+          N2 b = context2.findById(it.getElement());
+          if (b != null) {
+            handler.movedOut(removed);
+          } else {
+            handler.removed(removed);
+          }
           break;
       }
     }
 
+    handler.leave(node1);
 
   }
 

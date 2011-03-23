@@ -20,6 +20,7 @@
 package org.exoplatform.treesync;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,6 +34,9 @@ public class SimpleNode {
   private static final AtomicInteger generator = new AtomicInteger();
 
   /** . */
+  private SimpleNode parent;
+
+  /** . */
   private final String id;
 
   /** . */
@@ -42,7 +46,23 @@ public class SimpleNode {
   private final List<SimpleNode> children;
 
   public SimpleNode() {
-    this(null);
+    this((String)null);
+  }
+
+  private SimpleNode(SimpleNode that) {
+
+    ArrayList<SimpleNode> children = new ArrayList<SimpleNode>(that.children.size());
+    for (SimpleNode thatChild : that.children) {
+      SimpleNode child = new SimpleNode(thatChild);
+      child.parent = this;
+      children.add(child);
+    }
+
+    //
+    this.id = that.id;
+    this.state = that.state;
+    this.children = children;
+    this.parent = null;
   }
 
   public SimpleNode(String state)
@@ -50,6 +70,7 @@ public class SimpleNode {
     this.id = "" + generator.incrementAndGet();
     this.children = new ArrayList<SimpleNode>();
     this.state = state;
+    this.parent = null;
   }
 
   public String getId() {
@@ -65,7 +86,57 @@ public class SimpleNode {
   }
 
   public SimpleNode addChild(String state) {
-    return new SimpleNode(state);
+    SimpleNode child = new SimpleNode(state);
+    children.add(child);
+    child.parent = this;
+    return child;
+  }
+
+  public SimpleNode getRoot() {
+    return parent == null ? this : parent.getRoot();
+  }
+
+  public void addChild(SimpleNode child) {
+    if (child.parent == null) {
+      throw new AssertionError();
+    }
+    if (getRoot() != child.getRoot()) {
+      throw new AssertionError();
+    }
+    for (Iterator<SimpleNode> i = child.parent.children.iterator();i.hasNext();) {
+      SimpleNode sibling = i.next();
+      if (sibling == child) {
+        i.remove();
+        child.parent = null;
+        break;
+      }
+    }
+    child.parent = this;
+    children.add(child);
+  }
+
+  public SimpleNode getChild(String id) {
+    for (SimpleNode child : children) {
+      if (child.id.equals(id)) {
+        return child;
+      }
+    }
+    return null;
+  }
+
+  public void destroy() {
+    if (parent != null) {
+      for (Iterator<SimpleNode> i = parent.children.iterator();i.hasNext();) {
+        SimpleNode sibling = i.next();
+        if (sibling == this) {
+          i.remove();
+          parent = null;
+        }
+      }
+    }
+    for (SimpleNode child : children) {
+      child.parent = null;
+    }
   }
 
   public List<SimpleNode> getChildren() {
@@ -73,12 +144,7 @@ public class SimpleNode {
   }
 
   public SimpleNode clone() {
-    try {
-      return (SimpleNode)super.clone();
-    }
-    catch (CloneNotSupportedException e) {
-      throw new AssertionError();
-    }
+    return new SimpleNode(this);
   }
 
   public boolean equals(Object o) {
@@ -92,5 +158,10 @@ public class SimpleNode {
       }
     }
     return false;
+  }
+
+  @Override
+  public String toString() {
+    return "SimpleNode[id=" + id + ",identity=" + System.identityHashCode(this) + "]";
   }
 }

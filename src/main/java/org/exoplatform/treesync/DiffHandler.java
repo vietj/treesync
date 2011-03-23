@@ -27,9 +27,9 @@ public interface DiffHandler<N1, N2> {
 
   void enter(N1 node1);
 
-  void added(N1 model);
+  void added(N2 mode2);
 
-  void removed(N1 model);
+  void removed(N1 node1);
 
   void movedOut(N1 node1);
 

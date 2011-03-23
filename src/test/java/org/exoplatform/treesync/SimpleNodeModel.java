@@ -27,6 +27,9 @@ import java.util.List;
  */
 public class SimpleNodeModel implements NodeModel<SimpleNode> {
 
+  /** . */
+  public static final NodeModel<SimpleNode> INSTANCE = new SimpleNodeModel();
+
   public String getId(SimpleNode node) {
     return node.getId();
   }
