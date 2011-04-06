@@ -38,9 +38,9 @@ public class Diff<N1, N2> {
    /** . */
    private final NodeContext<N2> context2;
 
-   public Diff(NodeModel<N1> model1, N1 root1, NodeModel<N2> model2, N2 root2) {
-      this.context1 = new NodeContext<N1>(model1, root1);
-      this.context2 = new NodeContext<N2>(model2, root2);
+   public Diff(NodeContext<N1> context1, NodeContext<N2> context2) {
+      this.context1 = context1;
+      this.context2 = context2;
    }
 
    public void perform(DiffHandler<N1, N2> handler) throws SyncException {

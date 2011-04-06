@@ -25,35 +25,42 @@ package org.exoplatform.treesync;
  */
 public class NodeContext<N> {
 
-  /** . */
-  final NodeModel<N> model;
+   /** . */
+   final NodeModel<N> model;
 
-  /** . */
-  final N root;
+   /** . */
+   final N root;
 
-  NodeContext(NodeModel<N> model, N root) {
-    this.model = model;
-    this.root = root;
-  }
-
-  N findById(String id) {
-    return findById(root, id);
-  }
-
-  N findById(N node, String id) {
-    N found;
-    if (model.getId(node).equals(id)) {
-      found = node;
-    } else {
-      found = null;
-      for (N child : model.getChildren(node)) {
-        found = findById(child, id);
-        if (found != null) {
-          break;
-        }
+   public NodeContext(NodeModel<N> model, N root) throws NullPointerException {
+      if (model == null) {
+         throw new NullPointerException();
       }
-    }
-    return found;
-  }
+      if (root == null) {
+         throw new NullPointerException();
+      }
+
+      this.model = model;
+      this.root = root;
+   }
+
+   N findById(String id) {
+      return findById(root, id);
+   }
+
+   N findById(N node, String id) {
+      N found;
+      if (model.getId(node).equals(id)) {
+         found = node;
+      } else {
+         found = null;
+         for (N child : model.getChildren(node)) {
+            found = findById(child, id);
+            if (found != null) {
+               break;
+            }
+         }
+      }
+      return found;
+   }
 
 }

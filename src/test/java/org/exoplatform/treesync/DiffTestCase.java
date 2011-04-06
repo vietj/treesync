@@ -27,10 +27,14 @@ import junit.framework.TestCase;
  */
 public class DiffTestCase extends TestCase {
 
+   private static NodeContext<SimpleNode> wrap(SimpleNode node) {
+      return new NodeContext<SimpleNode>(SimpleNodeModel.INSTANCE, node);
+   }
+
    public void testSyncException() {
       SimpleNode node1 = new SimpleNode();
       SimpleNode node2 = new SimpleNode();
-      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(wrap(node1), wrap(node2));
       BufferHandler handler = new BufferHandler();
       try {
          diff.perform(handler);
@@ -42,7 +46,7 @@ public class DiffTestCase extends TestCase {
    public void testEmpty() throws Exception {
       SimpleNode node1 = new SimpleNode();
       SimpleNode node2 = node1.clone();
-      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(wrap(node1), wrap(node2));
       BufferHandler handler = new BufferHandler();
       diff.perform(handler);
       handler.assertEnter(node1, node2);
@@ -55,7 +59,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode child1 = node1.addChild();
       SimpleNode node2 = node1.clone();
       SimpleNode child2 = node2.getChild(child1.getId());
-      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(wrap(node1), wrap(node2));
       BufferHandler handler = new BufferHandler();
       diff.perform(handler);
       handler.assertEnter(node1, node2);
@@ -70,7 +74,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode child1 = node1.addChild();
       SimpleNode node2 = node1.clone();
       node2.getChild(child1.getId()).destroy();
-      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(wrap(node1), wrap(node2));
       BufferHandler handler = new BufferHandler();
       diff.perform(handler);
       handler.assertEnter(node1, node2);
@@ -83,7 +87,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode node1 = new SimpleNode();
       SimpleNode node2 = node1.clone();
       SimpleNode child2 = node2.addChild();
-      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(wrap(node1), wrap(node2));
       BufferHandler handler = new BufferHandler();
       diff.perform(handler);
       handler.assertEnter(node1, node2);
@@ -102,7 +106,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode b2 = root2.getChild(b1.getId());
       SimpleNode c2 = a2.getChild(c1.getId());
       b2.addChild(c2);
-      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, root1, SimpleNodeModel.INSTANCE, root2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(wrap(root1), wrap(root2));
       BufferHandler handler = new BufferHandler();
       diff.perform(handler);
       handler.assertEnter(root1, root2);
@@ -131,7 +135,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode d2 = c2.getChild(d1.getId());
       b2.addChild(c2);
       root2.addChild(d2);
-      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, root1, SimpleNodeModel.INSTANCE, root2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(wrap(root1), wrap(root2));
       BufferHandler handler = new BufferHandler();
       diff.perform(handler);
       handler.assertEnter(root1, root2);
