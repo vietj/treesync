@@ -28,7 +28,7 @@ import java.util.LinkedList;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BufferHandler implements DiffHandler<SimpleNode, SimpleNode> {
+public class BufferingDiffHandler implements DiffHandler<SimpleNode, SimpleNode> {
 
    public static class Change {
    }
@@ -89,9 +89,7 @@ public class BufferHandler implements DiffHandler<SimpleNode, SimpleNode> {
       }
    }
 
-   /**
-    * .
-    */
+   /** . */
    private final LinkedList<Change> changes = new LinkedList<Change>();
 
    public void enter(SimpleNode src, SimpleNode dst) {

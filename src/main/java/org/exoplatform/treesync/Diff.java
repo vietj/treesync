@@ -104,7 +104,7 @@ public class Diff<N1, N2> {
       handler.leave(node1, node2);
    }
 
-   private <N> String[] ids(List<N> nodes, NodeModel<N> model) {
+   private <N> String[] ids(List<N> nodes, TreeModel<N> model) {
       int size = nodes.size();
       String[] ids = new String[size];
       if (nodes instanceof RandomAccess) {

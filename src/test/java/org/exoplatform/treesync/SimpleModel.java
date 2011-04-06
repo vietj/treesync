@@ -25,16 +25,24 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleNodeModel implements NodeModel<SimpleNode> {
+public class SimpleModel implements TreeModel<SimpleNode> {
 
-  /** . */
-  public static final NodeModel<SimpleNode> INSTANCE = new SimpleNodeModel();
+   public static NodeContext<SimpleNode> read(SimpleNode node) {
+      return new NodeContext<SimpleNode>(INSTANCE, node);
+   }
 
-  public String getId(SimpleNode node) {
-    return node.getId();
-  }
+   /** . */
+   public static final TreeModel<SimpleNode> INSTANCE = new SimpleModel();
 
-  public List<SimpleNode> getChildren(SimpleNode node) {
-    return node.getChildren();
-  }
+   public String getId(SimpleNode node) {
+      return node.getId();
+   }
+
+   public SimpleNode getParent(SimpleNode node) {
+      return node.getParent();
+   }
+
+   public List<SimpleNode> getChildren(SimpleNode node) {
+      return node.getChildren();
+   }
 }

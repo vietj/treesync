@@ -25,10 +25,12 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface NodeModel<N> {
+public interface TreeModel<N> {
 
-  String getId(N node);
+   String getId(N node);
 
-  List<N> getChildren(N node);
+   N getParent(N node);
+
+   List<N> getChildren(N node);
 
 }

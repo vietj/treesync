@@ -68,7 +68,11 @@ public class SimpleNode {
     return id;
   }
 
-  public SimpleNode addChild() {
+   public SimpleNode getParent() {
+      return parent;
+   }
+
+   public SimpleNode addChild() {
     SimpleNode child = new SimpleNode();
     children.add(child);
     child.parent = this;

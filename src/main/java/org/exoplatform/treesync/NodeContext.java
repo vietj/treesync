@@ -26,12 +26,12 @@ package org.exoplatform.treesync;
 public class NodeContext<N> {
 
    /** . */
-   final NodeModel<N> model;
+   final TreeModel<N> model;
 
    /** . */
    final N root;
 
-   public NodeContext(NodeModel<N> model, N root) throws NullPointerException {
+   public NodeContext(TreeModel<N> model, N root) throws NullPointerException {
       if (model == null) {
          throw new NullPointerException();
       }
