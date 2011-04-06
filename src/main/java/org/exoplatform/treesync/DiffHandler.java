@@ -25,16 +25,16 @@ package org.exoplatform.treesync;
  */
 public interface DiffHandler<N1, N2> {
 
-  void enter(N1 node1);
+   void enter(N1 src, N2 dst);
 
-  void added(N2 mode2);
+   void added(N2 dst);
 
-  void removed(N1 node1);
+   void removed(N1 src);
 
-  void movedOut(N1 node1);
+   void movedOut(N1 src, N2 dst);
 
-  void movedIn(N1 model);
+   void movedIn(N1 src, N2 dst);
 
-  void leave(N1 node1);
+   void leave(N1 src, N2 dst);
 
 }

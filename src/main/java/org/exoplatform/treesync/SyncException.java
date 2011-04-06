@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -21,39 +21,21 @@ package org.exoplatform.treesync;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
  */
-public class NodeContext<N> {
+public class SyncException extends Exception {
 
-  /** . */
-  final NodeModel<N> model;
+   public SyncException() {
+   }
 
-  /** . */
-  final N root;
+   public SyncException(String s) {
+      super(s);
+   }
 
-  NodeContext(NodeModel<N> model, N root) {
-    this.model = model;
-    this.root = root;
-  }
+   public SyncException(String s, Throwable throwable) {
+      super(s, throwable);
+   }
 
-  N findById(String id) {
-    return findById(root, id);
-  }
-
-  N findById(N node, String id) {
-    N found;
-    if (model.getId(node).equals(id)) {
-      found = node;
-    } else {
-      found = null;
-      for (N child : model.getChildren(node)) {
-        found = findById(child, id);
-        if (found != null) {
-          break;
-        }
-      }
-    }
-    return found;
-  }
-
+   public SyncException(Throwable throwable) {
+      super(throwable);
+   }
 }

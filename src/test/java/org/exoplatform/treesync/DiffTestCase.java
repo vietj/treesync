@@ -27,114 +27,127 @@ import junit.framework.TestCase;
  */
 public class DiffTestCase extends TestCase {
 
-  public void testEmpty() {
-    SimpleNode node1 = new SimpleNode();
-    SimpleNode node2 = node1.clone();
-    Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
-    BufferHandler handler = new BufferHandler();
-    diff.perform(handler);
-    handler.assertEnter(node1);
-    handler.assertLeave(node1);
-    handler.assertEmpty();
-  }
+   public void testSyncException() {
+      SimpleNode node1 = new SimpleNode();
+      SimpleNode node2 = new SimpleNode();
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      BufferHandler handler = new BufferHandler();
+      try {
+         diff.perform(handler);
+         fail();
+      } catch (SyncException e) {
+      }
+   }
 
-  public void testFoo() {
-    SimpleNode node1 = new SimpleNode();
-    SimpleNode child1 = node1.addChild("foo");
-    SimpleNode node2 = node1.clone();
-    Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
-    BufferHandler handler = new BufferHandler();
-    diff.perform(handler);
-    handler.assertEnter(node1);
-    handler.assertEnter(child1);
-    handler.assertLeave(child1);
-    handler.assertLeave(node1);
-    handler.assertEmpty();
-  }
+   public void testEmpty() throws Exception {
+      SimpleNode node1 = new SimpleNode();
+      SimpleNode node2 = node1.clone();
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      BufferHandler handler = new BufferHandler();
+      diff.perform(handler);
+      handler.assertEnter(node1, node2);
+      handler.assertLeave(node1, node2);
+      handler.assertEmpty();
+   }
 
-  public void testRemove() {
-    SimpleNode node1 = new SimpleNode();
-    SimpleNode child1 = node1.addChild("foo");
-    SimpleNode node2 = node1.clone();
-    node2.getChild(child1.getId()).destroy();
-    Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
-    BufferHandler handler = new BufferHandler();
-    diff.perform(handler);
-    handler.assertEnter(node1);
-    handler.assertRemoved(child1);
-    handler.assertLeave(node1);
-    handler.assertEmpty();
-  }
+   public void testFoo() throws Exception {
+      SimpleNode node1 = new SimpleNode();
+      SimpleNode child1 = node1.addChild("foo");
+      SimpleNode node2 = node1.clone();
+      SimpleNode child2 = node2.getChild(child1.getId());
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      BufferHandler handler = new BufferHandler();
+      diff.perform(handler);
+      handler.assertEnter(node1, node2);
+      handler.assertEnter(child1, child2);
+      handler.assertLeave(child1, child2);
+      handler.assertLeave(node1, node2);
+      handler.assertEmpty();
+   }
 
-  public void testAdd() {
-    SimpleNode node1 = new SimpleNode();
-    SimpleNode node2 = node1.clone();
-    SimpleNode child2 = node2.addChild("foo");
-    Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
-    BufferHandler handler = new BufferHandler();
-    diff.perform(handler);
-    handler.assertEnter(node1);
-    handler.assertAdded(child2);
-    handler.assertLeave(node1);
-    handler.assertEmpty();
-  }
+   public void testRemove() throws Exception {
+      SimpleNode node1 = new SimpleNode();
+      SimpleNode child1 = node1.addChild("foo");
+      SimpleNode node2 = node1.clone();
+      node2.getChild(child1.getId()).destroy();
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      BufferHandler handler = new BufferHandler();
+      diff.perform(handler);
+      handler.assertEnter(node1, node2);
+      handler.assertRemoved(child1);
+      handler.assertLeave(node1, node2);
+      handler.assertEmpty();
+   }
 
-  public void testMove() {
-    SimpleNode root1 = new SimpleNode();
-    SimpleNode a1 = root1.addChild("a");
-    SimpleNode b1 = root1.addChild("b");
-    SimpleNode c1 = a1.addChild("c");
-    SimpleNode root2 = root1.clone();
-    SimpleNode a2 = root2.getChild(a1.getId());
-    SimpleNode b2 = root2.getChild(b1.getId());
-    SimpleNode c2 = a2.getChild(c1.getId());
-    b2.addChild(c2);
-    Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, root1, SimpleNodeModel.INSTANCE, root2);
-    BufferHandler handler = new BufferHandler();
-    diff.perform(handler);
-    handler.assertEnter(root1);
-    handler.assertEnter(a1);
-    handler.assertMovedOut(c1);
-    handler.assertLeave(a1);
-    handler.assertEnter(b1);
-    handler.assertMovedIn(c1);
-    handler.assertEnter(c1);
-    handler.assertLeave(c1);
-    handler.assertLeave(b1);
-    handler.assertLeave(root1);
-    handler.assertEmpty();
-  }
+   public void testAdd() throws Exception {
+      SimpleNode node1 = new SimpleNode();
+      SimpleNode node2 = node1.clone();
+      SimpleNode child2 = node2.addChild("foo");
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
+      BufferHandler handler = new BufferHandler();
+      diff.perform(handler);
+      handler.assertEnter(node1, node2);
+      handler.assertAdded(child2);
+      handler.assertLeave(node1, node2);
+      handler.assertEmpty();
+   }
 
-  public void testRecurseOnMove() {
-    SimpleNode root1 = new SimpleNode();
-    SimpleNode a1 = root1.addChild("a");
-    SimpleNode b1 = root1.addChild("b");
-    SimpleNode c1 = a1.addChild("c");
-    SimpleNode d1 = c1.addChild("d");
-    SimpleNode root2 = root1.clone();
-    SimpleNode a2 = root2.getChild(a1.getId());
-    SimpleNode b2 = root2.getChild(b1.getId());
-    SimpleNode c2 = a2.getChild(c1.getId());
-    SimpleNode d2 = c2.getChild(d1.getId());
-    b2.addChild(c2);
-    root2.addChild(d2);
-    Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, root1, SimpleNodeModel.INSTANCE, root2);
-    BufferHandler handler = new BufferHandler();
-    diff.perform(handler);
-    handler.assertEnter(root1);
-    handler.assertEnter(a1);
-    handler.assertMovedOut(c1);
-    handler.assertLeave(a1);
-    handler.assertEnter(b1);
-    handler.assertMovedIn(c1);
-    handler.assertEnter(c1);
-    handler.assertMovedOut(d1);
-    handler.assertLeave(c1);
-    handler.assertLeave(b1);
-    handler.assertMovedIn(d1);
-    handler.assertEnter(d1);
-    handler.assertLeave(d1);
-    handler.assertLeave(root1);
-    handler.assertEmpty();
-  }
+   public void testMove() throws Exception {
+      SimpleNode root1 = new SimpleNode();
+      SimpleNode a1 = root1.addChild("a");
+      SimpleNode b1 = root1.addChild("b");
+      SimpleNode c1 = a1.addChild("c");
+      SimpleNode root2 = root1.clone();
+      SimpleNode a2 = root2.getChild(a1.getId());
+      SimpleNode b2 = root2.getChild(b1.getId());
+      SimpleNode c2 = a2.getChild(c1.getId());
+      b2.addChild(c2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, root1, SimpleNodeModel.INSTANCE, root2);
+      BufferHandler handler = new BufferHandler();
+      diff.perform(handler);
+      handler.assertEnter(root1, root2);
+      handler.assertEnter(a1, a2);
+      handler.assertMovedOut(c1, c2);
+      handler.assertLeave(a1, a2);
+      handler.assertEnter(b1, b2);
+      handler.assertMovedIn(c1, c2);
+      handler.assertEnter(c1, c2);
+      handler.assertLeave(c1, c2);
+      handler.assertLeave(b1, b2);
+      handler.assertLeave(root1, root2);
+      handler.assertEmpty();
+   }
+
+   public void testRecurseOnMove() throws Exception {
+      SimpleNode root1 = new SimpleNode();
+      SimpleNode a1 = root1.addChild("a");
+      SimpleNode b1 = root1.addChild("b");
+      SimpleNode c1 = a1.addChild("c");
+      SimpleNode d1 = c1.addChild("d");
+      SimpleNode root2 = root1.clone();
+      SimpleNode a2 = root2.getChild(a1.getId());
+      SimpleNode b2 = root2.getChild(b1.getId());
+      SimpleNode c2 = a2.getChild(c1.getId());
+      SimpleNode d2 = c2.getChild(d1.getId());
+      b2.addChild(c2);
+      root2.addChild(d2);
+      Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, root1, SimpleNodeModel.INSTANCE, root2);
+      BufferHandler handler = new BufferHandler();
+      diff.perform(handler);
+      handler.assertEnter(root1, root2);
+      handler.assertEnter(a1, a2);
+      handler.assertMovedOut(c1, c2);
+      handler.assertLeave(a1, a2);
+      handler.assertEnter(b1, b2);
+      handler.assertMovedIn(c1, c2);
+      handler.assertEnter(c1, c2);
+      handler.assertMovedOut(d1, d2);
+      handler.assertLeave(c1, c2);
+      handler.assertLeave(b1, b2);
+      handler.assertMovedIn(d1, d2);
+      handler.assertEnter(d1, d2);
+      handler.assertLeave(d1, d2);
+      handler.assertLeave(root1, root2);
+      handler.assertEmpty();
+   }
 }

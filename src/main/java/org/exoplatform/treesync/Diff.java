@@ -32,91 +32,91 @@ import java.util.RandomAccess;
  */
 public class Diff<N1, N2> {
 
-  /** . */
-  private final NodeContext<N1> context1;
+   /** . */
+   private final NodeContext<N1> context1;
 
-  /** . */
-  private final NodeContext<N2> context2;
+   /** . */
+   private final NodeContext<N2> context2;
 
-  public Diff(NodeModel<N1> model1, N1 root1, NodeModel<N2> model2, N2 root2) {
-    this.context1 = new NodeContext<N1>(model1, root1);
-    this.context2 = new NodeContext<N2>(model2, root2);
-  }
+   public Diff(NodeModel<N1> model1, N1 root1, NodeModel<N2> model2, N2 root2) {
+      this.context1 = new NodeContext<N1>(model1, root1);
+      this.context2 = new NodeContext<N2>(model2, root2);
+   }
 
-  public void perform(DiffHandler<N1, N2> handler) {
-    perform(context1.root, context2.root, handler);
-  }
+   public void perform(DiffHandler<N1, N2> handler) throws SyncException {
+      perform(context1.root, context2.root, handler);
+   }
 
-  private void perform(N1 node1, N2 node2, DiffHandler<N1, N2> handler) {
+   private void perform(N1 node1, N2 node2, DiffHandler<N1, N2> handler) throws SyncException {
 
-    handler.enter(node1);
-
-    String id1 = context1.model.getId(node1);
-    String id2 = context2.model.getId(node2);
-
-    // First check equality
-    if (!id1.equals(id2)) {
       //
-    }
+      String id1 = context1.model.getId(node1);
+      String id2 = context2.model.getId(node2);
 
-    //
-
-    //
-    List<N1> children1 = context1.model.getChildren(node1);
-    String[] childrenIds1 = ids(context1.model.getChildren(node1), context1.model);
-    Iterator<N1> it1 = children1.iterator();
-    List<N2> children2 = context2.model.getChildren(node2);
-    String[] childrenIds2 = ids(context2.model.getChildren(node2), context2.model);
-    Iterator<N2> it2 = children2.iterator();
-
-    //
-    ChangeIterator<String> it = new LCS<String>().diff(childrenIds1, childrenIds2);
-    while (it.hasNext()) {
-      switch (it.next()) {
-        case KEEP:
-          perform(it1.next(), it2.next(), handler);
-          break;
-        case ADD:
-          it2.next();
-          N1 a = context1.findById(it.getElement());
-          N2 added = children2.get(it.getIndex2() - 1);
-          if (a != null) {
-            handler.movedIn(a);
-            perform(a, added, handler);
-          } else {
-            handler.added(added);
-          }
-          break;
-        case REMOVE:
-          it1.next();
-          N1 removed = children1.get(it.getIndex1() - 1);
-          N2 b = context2.findById(it.getElement());
-          if (b != null) {
-            handler.movedOut(removed);
-          } else {
-            handler.removed(removed);
-          }
-          break;
+      // First check equality
+      if (!id1.equals(id2)) {
+         throw new SyncException("Cannot perform diff between different nodes " + id1 + " " + id2);
       }
-    }
 
-    handler.leave(node1);
+      // Signal enter
+      handler.enter(node1, node2);
 
-  }
+      //
+      List<N1> children1 = context1.model.getChildren(node1);
+      String[] childrenIds1 = ids(context1.model.getChildren(node1), context1.model);
+      Iterator<N1> it1 = children1.iterator();
+      List<N2> children2 = context2.model.getChildren(node2);
+      String[] childrenIds2 = ids(context2.model.getChildren(node2), context2.model);
+      Iterator<N2> it2 = children2.iterator();
 
-  private <N> String[] ids(List<N> nodes, NodeModel<N> model) {
-    int size = nodes.size();
-    String[] ids = new String[size];
-    if (nodes instanceof RandomAccess) {
-      for (int i = 0;i < size;i++) {
-        ids[i] = model.getId(nodes.get(i));
+      //
+      ChangeIterator<String> it = new LCS<String>().diff(childrenIds1, childrenIds2);
+      while (it.hasNext()) {
+         switch (it.next()) {
+            case KEEP:
+               perform(it1.next(), it2.next(), handler);
+               break;
+            case ADD:
+               it2.next();
+               N1 a = context1.findById(it.getElement());
+               N2 added = children2.get(it.getIndex2() - 1);
+               if (a != null) {
+                  handler.movedIn(a, added);
+                  perform(a, added, handler);
+               } else {
+                  handler.added(added);
+               }
+               break;
+            case REMOVE:
+               it1.next();
+               N1 removed = children1.get(it.getIndex1() - 1);
+               N2 b = context2.findById(it.getElement());
+               if (b != null) {
+                  handler.movedOut(removed, b);
+               } else {
+                  handler.removed(removed);
+               }
+               break;
+         }
       }
-    } else {
-      int i = 0;
-      for (N node : nodes) {
-        ids[i++] = model.getId(node);
+
+      // Signal leave
+      handler.leave(node1, node2);
+   }
+
+   private <N> String[] ids(List<N> nodes, NodeModel<N> model) {
+      int size = nodes.size();
+      String[] ids = new String[size];
+      if (nodes instanceof RandomAccess) {
+         for (int i = 0; i < size; i++) {
+            ids[i] = model.getId(nodes.get(i));
+         }
+      } else {
+         int i = 0;
+         for (N node : nodes) {
+            ids[i++] = model.getId(node);
+         }
       }
-    }
-    return ids;
-  }
+      return ids;
+   }
 }

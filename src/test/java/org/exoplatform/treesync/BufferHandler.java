@@ -30,115 +30,135 @@ import java.util.LinkedList;
  */
 public class BufferHandler implements DiffHandler<SimpleNode, SimpleNode> {
 
-  public static class Change {
-  }
+   public static class Change {
+   }
 
-  public static class Enter extends Change {
-    private final SimpleNode node;
-    public Enter(SimpleNode node) {
-      this.node = node;
-    }
-  }
+   public static class Enter extends Change {
+      private final SimpleNode src;
+      private final SimpleNode dst;
 
-  public static class Leave extends Change {
-    private final SimpleNode node;
-    public Leave(SimpleNode node) {
-      this.node = node;
-    }
-  }
+      public Enter(SimpleNode src, SimpleNode dst) {
+         this.src = src;
+         this.dst = dst;
+      }
+   }
 
-  public static class Added extends Change {
-    private final SimpleNode node;
-    public Added(SimpleNode node) {
-      this.node = node;
-    }
-  }
+   public static class Leave extends Change {
+      private final SimpleNode src;
+      private final SimpleNode dst;
 
-  public static class Removed extends Change {
-    private final SimpleNode node;
-    public Removed(SimpleNode node) {
-      this.node = node;
-    }
-  }
+      public Leave(SimpleNode src, SimpleNode dst) {
+         this.src = src;
+         this.dst = dst;
+      }
+   }
 
-  public static class MovedOut extends Change {
-    private final SimpleNode node;
-    public MovedOut(SimpleNode node) {
-      this.node = node;
-    }
-  }
+   public static class Added extends Change {
+      private final SimpleNode node;
 
-  public static class MovedIn extends Change {
-    private final SimpleNode node;
-    public MovedIn(SimpleNode node) {
-      this.node = node;
-    }
-  }
+      public Added(SimpleNode node) {
+         this.node = node;
+      }
+   }
 
-  /** . */
-  private final LinkedList<Change> changes = new LinkedList<Change>();
+   public static class Removed extends Change {
+      private final SimpleNode node;
 
-  public void enter(SimpleNode node1) {
-    changes.add(new Enter(node1));
-  }
+      public Removed(SimpleNode node) {
+         this.node = node;
+      }
+   }
 
-  public void added(SimpleNode node2) {
-    changes.add(new Added(node2));
-  }
+   public static class MovedOut extends Change {
+      private final SimpleNode src;
+      private final SimpleNode dst;
 
-  public void removed(SimpleNode node1) {
-    changes.add(new Removed(node1));
-  }
+      public MovedOut(SimpleNode src, SimpleNode dst) {
+         this.src = src;
+         this.dst = dst;
+      }
+   }
 
-  public void movedOut(SimpleNode node1) {
-    changes.add(new MovedOut(node1));
-  }
+   public static class MovedIn extends Change {
+      private final SimpleNode src;
+      private final SimpleNode dst;
 
-  public void movedIn(SimpleNode node1) {
-    changes.add(new MovedIn(node1));
-  }
+      public MovedIn(SimpleNode src, SimpleNode dst) {
+         this.src = src;
+         this.dst = dst;
+      }
+   }
 
-  public void leave(SimpleNode node1) {
-    changes.add(new Leave(node1));
-  }
+   /**
+    * .
+    */
+   private final LinkedList<Change> changes = new LinkedList<Change>();
 
-  public void assertEnter(SimpleNode node) {
-    Assert.assertTrue(changes.size() > 0);
-    Enter change = (Enter)changes.removeFirst();
-    Assert.assertSame(node, change.node);
-  }
+   public void enter(SimpleNode src, SimpleNode dst) {
+      changes.add(new Enter(src, dst));
+   }
 
-  public void assertLeave(SimpleNode node) {
-    Assert.assertTrue(changes.size() > 0);
-    Leave change = (Leave)changes.removeFirst();
-    Assert.assertSame(node, change.node);
-  }
+   public void added(SimpleNode dst) {
+      changes.add(new Added(dst));
+   }
 
-  public void assertRemoved(SimpleNode node) {
-    Assert.assertTrue(changes.size() > 0);
-    Removed change = (Removed)changes.removeFirst();
-    Assert.assertSame(node, change.node);
-  }
+   public void removed(SimpleNode src) {
+      changes.add(new Removed(src));
+   }
 
-  public void assertAdded(SimpleNode node) {
-    Assert.assertTrue(changes.size() > 0);
-    Added change = (Added)changes.removeFirst();
-    Assert.assertSame(node, change.node);
-  }
+   public void movedOut(SimpleNode src, SimpleNode dst) {
+      changes.add(new MovedOut(src, dst));
+   }
 
-  public void assertMovedOut(SimpleNode node) {
-    Assert.assertTrue(changes.size() > 0);
-    MovedOut change = (MovedOut)changes.removeFirst();
-    Assert.assertSame(node, change.node);
-  }
+   public void movedIn(SimpleNode src, SimpleNode dst) {
+      changes.add(new MovedIn(src, dst));
+   }
 
-  public void assertMovedIn(SimpleNode node) {
-    Assert.assertTrue(changes.size() > 0);
-    MovedIn change = (MovedIn)changes.removeFirst();
-    Assert.assertSame(node, change.node);
-  }
+   public void leave(SimpleNode src, SimpleNode dst) {
+      changes.add(new Leave(src, dst));
+   }
 
-  public void assertEmpty() {
-    Assert.assertEquals(Collections.<Change>emptyList(), changes);
-  }
+   public void assertEnter(SimpleNode src, SimpleNode dst) {
+      Assert.assertTrue(changes.size() > 0);
+      Enter change = (Enter) changes.removeFirst();
+      Assert.assertSame(src, change.src);
+      Assert.assertSame(dst, change.dst);
+   }
+
+   public void assertLeave(SimpleNode src, SimpleNode dst) {
+      Assert.assertTrue(changes.size() > 0);
+      Leave change = (Leave) changes.removeFirst();
+      Assert.assertSame(src, change.src);
+      Assert.assertSame(dst, change.dst);
+   }
+
+   public void assertRemoved(SimpleNode node) {
+      Assert.assertTrue(changes.size() > 0);
+      Removed change = (Removed) changes.removeFirst();
+      Assert.assertSame(node, change.node);
+   }
+
+   public void assertAdded(SimpleNode node) {
+      Assert.assertTrue(changes.size() > 0);
+      Added change = (Added) changes.removeFirst();
+      Assert.assertSame(node, change.node);
+   }
+
+   public void assertMovedOut(SimpleNode src, SimpleNode dst) {
+      Assert.assertTrue(changes.size() > 0);
+      MovedOut change = (MovedOut) changes.removeFirst();
+      Assert.assertSame(src, change.src);
+      Assert.assertSame(dst, change.dst);
+   }
+
+   public void assertMovedIn(SimpleNode src, SimpleNode dst) {
+      Assert.assertTrue(changes.size() > 0);
+      MovedIn change = (MovedIn) changes.removeFirst();
+      Assert.assertSame(src, change.src);
+      Assert.assertSame(dst, change.dst);
+   }
+
+   public void assertEmpty() {
+      Assert.assertEquals(Collections.<Change>emptyList(), changes);
+   }
 }
