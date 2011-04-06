@@ -40,14 +40,7 @@ public class SimpleNode {
   private final String id;
 
   /** . */
-  private String state;
-
-  /** . */
   private final List<SimpleNode> children;
-
-  public SimpleNode() {
-    this((String)null);
-  }
 
   private SimpleNode(SimpleNode that) {
 
@@ -60,16 +53,14 @@ public class SimpleNode {
 
     //
     this.id = that.id;
-    this.state = that.state;
     this.children = children;
     this.parent = null;
   }
 
-  public SimpleNode(String state)
+  public SimpleNode()
   {
     this.id = "" + generator.incrementAndGet();
     this.children = new ArrayList<SimpleNode>();
-    this.state = state;
     this.parent = null;
   }
 
@@ -77,16 +68,8 @@ public class SimpleNode {
     return id;
   }
 
-  public String getState() {
-    return state;
-  }
-
-  public void setState(String state) {
-    this.state = state;
-  }
-
-  public SimpleNode addChild(String state) {
-    SimpleNode child = new SimpleNode(state);
+  public SimpleNode addChild() {
+    SimpleNode child = new SimpleNode();
     children.add(child);
     child.parent = this;
     return child;
@@ -145,19 +128,6 @@ public class SimpleNode {
 
   public SimpleNode clone() {
     return new SimpleNode(this);
-  }
-
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof SimpleNode) {
-      SimpleNode that = (SimpleNode)o;
-      if ((state != null && state.equals(that.state)) || (state == null && that.state == null)) {
-        return children.equals(that.children);
-      }
-    }
-    return false;
   }
 
   @Override

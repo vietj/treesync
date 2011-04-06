@@ -52,7 +52,7 @@ public class DiffTestCase extends TestCase {
 
    public void testFoo() throws Exception {
       SimpleNode node1 = new SimpleNode();
-      SimpleNode child1 = node1.addChild("foo");
+      SimpleNode child1 = node1.addChild();
       SimpleNode node2 = node1.clone();
       SimpleNode child2 = node2.getChild(child1.getId());
       Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
@@ -67,7 +67,7 @@ public class DiffTestCase extends TestCase {
 
    public void testRemove() throws Exception {
       SimpleNode node1 = new SimpleNode();
-      SimpleNode child1 = node1.addChild("foo");
+      SimpleNode child1 = node1.addChild();
       SimpleNode node2 = node1.clone();
       node2.getChild(child1.getId()).destroy();
       Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
@@ -82,7 +82,7 @@ public class DiffTestCase extends TestCase {
    public void testAdd() throws Exception {
       SimpleNode node1 = new SimpleNode();
       SimpleNode node2 = node1.clone();
-      SimpleNode child2 = node2.addChild("foo");
+      SimpleNode child2 = node2.addChild();
       Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleNodeModel.INSTANCE, node1, SimpleNodeModel.INSTANCE, node2);
       BufferHandler handler = new BufferHandler();
       diff.perform(handler);
@@ -94,9 +94,9 @@ public class DiffTestCase extends TestCase {
 
    public void testMove() throws Exception {
       SimpleNode root1 = new SimpleNode();
-      SimpleNode a1 = root1.addChild("a");
-      SimpleNode b1 = root1.addChild("b");
-      SimpleNode c1 = a1.addChild("c");
+      SimpleNode a1 = root1.addChild();
+      SimpleNode b1 = root1.addChild();
+      SimpleNode c1 = a1.addChild();
       SimpleNode root2 = root1.clone();
       SimpleNode a2 = root2.getChild(a1.getId());
       SimpleNode b2 = root2.getChild(b1.getId());
@@ -120,10 +120,10 @@ public class DiffTestCase extends TestCase {
 
    public void testRecurseOnMove() throws Exception {
       SimpleNode root1 = new SimpleNode();
-      SimpleNode a1 = root1.addChild("a");
-      SimpleNode b1 = root1.addChild("b");
-      SimpleNode c1 = a1.addChild("c");
-      SimpleNode d1 = c1.addChild("d");
+      SimpleNode a1 = root1.addChild();
+      SimpleNode b1 = root1.addChild();
+      SimpleNode c1 = a1.addChild();
+      SimpleNode d1 = c1.addChild();
       SimpleNode root2 = root1.clone();
       SimpleNode a2 = root2.getChild(a1.getId());
       SimpleNode b2 = root2.getChild(b1.getId());

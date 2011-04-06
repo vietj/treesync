@@ -29,8 +29,6 @@ public interface NodeModel<N> {
 
   String getId(N node);
 
-  String getState(N node);
-
   List<N> getChildren(N node);
 
 }

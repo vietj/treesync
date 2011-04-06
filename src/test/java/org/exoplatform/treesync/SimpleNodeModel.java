@@ -34,10 +34,6 @@ public class SimpleNodeModel implements NodeModel<SimpleNode> {
     return node.getId();
   }
 
-  public String getState(SimpleNode node) {
-    return node.getState();
-  }
-
   public List<SimpleNode> getChildren(SimpleNode node) {
     return node.getChildren();
   }
