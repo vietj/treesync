@@ -33,10 +33,10 @@ import java.util.RandomAccess;
 public class Diff<N1, N2> {
 
    /** . */
-   private final NodeContext<N1> context1;
+   final NodeContext<N1> context1;
 
    /** . */
-   private final NodeContext<N2> context2;
+   final NodeContext<N2> context2;
 
    public Diff(NodeContext<N1> context1, NodeContext<N2> context2) {
       this.context1 = context1;
@@ -45,6 +45,10 @@ public class Diff<N1, N2> {
 
    public void perform(DiffHandler<N1, N2> handler) throws SyncException {
       perform(context1.root, context2.root, handler);
+   }
+
+   public DiffChangeIterator<N1, N2> iterator() {
+      return new DiffChangeIterator<N1, N2>(this);
    }
 
    private void perform(N1 node1, N2 node2, DiffHandler<N1, N2> handler) throws SyncException {
