@@ -27,10 +27,6 @@ import java.util.List;
  */
 public class SimpleModel implements TreeModel<SimpleNode> {
 
-   public static NodeContext<SimpleNode> read(SimpleNode node) {
-      return new NodeContext<SimpleNode>(INSTANCE, node);
-   }
-
    /** . */
    public static final TreeModel<SimpleNode> INSTANCE = new SimpleModel();
 

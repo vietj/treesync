@@ -38,6 +38,19 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
    /** . */
    private Frame frame;
 
+   /** . */
+   private final NodeContext<N1> context1;
+
+   /** . */
+   private final NodeContext<N2> context2;
+
+   DiffChangeIterator(Diff<N1, N2> diff, NodeContext<N1> context1, NodeContext<N2> context2) {
+      this.diff = diff;
+      this.context1 = context1;
+      this.context2 = context2;
+      this.frame = new Frame(null, context1.root, context2.root);
+   }
+
    /**
     * The internal status.
     */
@@ -121,18 +134,13 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
       }
    }
 
-   DiffChangeIterator(Diff<N1, N2> diff) {
-      this.diff = diff;
-      this.frame = new Frame(null, diff.context1.root, diff.context2.root);
-   }
-
    public boolean hasNext() {
       if (frame != null) {
          if (frame.next == null) {
             switch (frame.previous) {
                case INIT:
-                  String id1 = diff.context1.model.getId(frame.node1);
-                  String id2 = diff.context2.model.getId(frame.node2);
+                  String id1 = context1.model.getId(frame.node1);
+                  String id2 = context2.model.getId(frame.node2);
                   if (!id1.equals(id2)) {
                      frame.next = Status.ERROR;
                      frame.source = frame.node1;
@@ -157,11 +165,11 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
                   frame = new Frame(frame, frame.source, frame.destination);
                   return hasNext();
                case ENTER:
-                  frame.children1 = diff.context1.model.getChildren(frame.node1);
-                  frame.childrenIds1 = ids(diff.context1.model.getChildren(frame.node1), diff.context1.model);
+                  frame.children1 = context1.model.getChildren(frame.node1);
+                  frame.childrenIds1 = ids(context1.model.getChildren(frame.node1), context1.model);
                   frame.it1 = frame.children1.iterator();
-                  frame.children2 = diff.context2.model.getChildren(frame.node2);
-                  frame.childrenIds2 = ids(diff.context2.model.getChildren(frame.node2), diff.context2.model);
+                  frame.children2 = context2.model.getChildren(frame.node2);
+                  frame.childrenIds2 = ids(context2.model.getChildren(frame.node2), context2.model);
                   frame.it2 = frame.children2.iterator();
                   frame.it = new LCS<String>().diff(frame.childrenIds1, frame.childrenIds2);
                case ADDED:
@@ -175,7 +183,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
                            return hasNext();
                         case ADD:
                            frame.it2.next();
-                           N1 a = diff.context1.findById(frame.it.getElement());
+                           N1 a = context1.findById(frame.it.getElement());
                            N2 added = frame.children2.get(frame.it.getIndex2() - 1);
                            if (a != null) {
                               frame.next = Status.MOVED_IN;
@@ -190,7 +198,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
                         case REMOVE:
                            frame.it1.next();
                            N1 removed = frame.children1.get(frame.it.getIndex1() - 1);
-                           N2 b = diff.context2.findById(frame.it.getElement());
+                           N2 b = context2.findById(frame.it.getElement());
                            if (b != null) {
                               frame.next = Status.MOVED_OUT;
                               frame.source = removed;
