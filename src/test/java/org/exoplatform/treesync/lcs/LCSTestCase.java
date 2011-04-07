@@ -38,7 +38,7 @@ public class LCSTestCase extends TestCase {
   private LCSChangeIterator<Character> diff(String s1, String s2) {
     Character[] c1 = chars(s1);
     Character[] c2 = chars(s2);
-    return new LCS<Character>().diff(c1, c2);
+    return new LCS<Character>().perform(c1, c2);
   }
 
   public void test1() {

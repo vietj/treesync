@@ -173,7 +173,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
                   frame.children2 = context2.getModel().getChildren(frame.node2);
                   frame.childrenIds2 = ids(context2.getModel().getChildren(frame.node2), context2.getModel());
                   frame.it2 = frame.children2.iterator();
-                  frame.it = new LCS<String>().diff(frame.childrenIds1, frame.childrenIds2);
+                  frame.it = new LCS<String>().perform(frame.childrenIds1, frame.childrenIds2);
                case ADDED:
                case REMOVED:
                case MOVED_OUT:

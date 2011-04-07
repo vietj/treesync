@@ -63,7 +63,7 @@ public class LCS<E> {
     this.n = -1;
   }
 
-  public final LCSChangeIterator<E> diff(E[] elements1, E[] elements2) {
+  public final LCSChangeIterator<E> perform(E[] elements1, E[] elements2) {
     m = 1 + elements1.length;
     n = 1 + elements2.length;
     int s = m * n;

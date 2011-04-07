@@ -36,8 +36,6 @@ public enum DiffChangeType {
 
    LEAVE,
 
-   ERROR,
-
-   BILTO // for now internally used
+   ERROR
 
 }
