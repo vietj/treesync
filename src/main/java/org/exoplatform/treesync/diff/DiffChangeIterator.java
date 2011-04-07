@@ -17,9 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync;
+package org.exoplatform.treesync.diff;
 
-import org.exoplatform.treesync.lcs.ChangeIterator;
+import org.exoplatform.treesync.NodeContext;
+import org.exoplatform.treesync.TreeModel;
+import org.exoplatform.treesync.lcs.LCSChangeIterator;
 import org.exoplatform.treesync.lcs.LCS;
 
 import java.util.Iterator;
@@ -48,7 +50,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
       this.diff = diff;
       this.context1 = context1;
       this.context2 = context2;
-      this.frame = new Frame(null, context1.root, context2.root);
+      this.frame = new Frame(null, context1.getRoot(), context2.getRoot());
    }
 
    /**
@@ -112,7 +114,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
       private Iterator<N2> it2;
 
       /** . */
-      private ChangeIterator<String> it;
+      private LCSChangeIterator<String> it;
 
       /** . */
       private Status previous;
@@ -139,8 +141,8 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
          if (frame.next == null) {
             switch (frame.previous) {
                case INIT:
-                  String id1 = context1.model.getId(frame.node1);
-                  String id2 = context2.model.getId(frame.node2);
+                  String id1 = context1.getModel().getId(frame.node1);
+                  String id2 = context2.getModel().getId(frame.node2);
                   if (!id1.equals(id2)) {
                      frame.next = Status.ERROR;
                      frame.source = frame.node1;
@@ -165,11 +167,11 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
                   frame = new Frame(frame, frame.source, frame.destination);
                   return hasNext();
                case ENTER:
-                  frame.children1 = context1.model.getChildren(frame.node1);
-                  frame.childrenIds1 = ids(context1.model.getChildren(frame.node1), context1.model);
+                  frame.children1 = context1.getModel().getChildren(frame.node1);
+                  frame.childrenIds1 = ids(context1.getModel().getChildren(frame.node1), context1.getModel());
                   frame.it1 = frame.children1.iterator();
-                  frame.children2 = context2.model.getChildren(frame.node2);
-                  frame.childrenIds2 = ids(context2.model.getChildren(frame.node2), context2.model);
+                  frame.children2 = context2.getModel().getChildren(frame.node2);
+                  frame.childrenIds2 = ids(context2.getModel().getChildren(frame.node2), context2.getModel());
                   frame.it2 = frame.children2.iterator();
                   frame.it = new LCS<String>().diff(frame.childrenIds1, frame.childrenIds2);
                case ADDED:

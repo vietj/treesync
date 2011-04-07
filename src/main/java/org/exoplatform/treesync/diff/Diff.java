@@ -17,18 +17,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.lcs;
+package org.exoplatform.treesync.diff;
+
+import org.exoplatform.treesync.NodeContext;
+import org.exoplatform.treesync.TreeModel;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum ChangeType {
+public class Diff<N1, N2> {
 
-  REMOVE,
+   /** . */
+   final TreeModel<N1> model1;
 
-  KEEP,
+   /** . */
+   final TreeModel<N2> model2;
 
-  ADD
+   public Diff(TreeModel<N1> model1, TreeModel<N2> model2) {
+      this.model1 = model1;
+      this.model2 = model2;
+   }
 
+   public DiffChangeIterator<N1, N2> perform(N1 node1, N2 node2) {
+      return new DiffChangeIterator<N1, N2>(this, new NodeContext<N1>(model1, node1), new NodeContext<N2>(model2, node2));
+   }
 }

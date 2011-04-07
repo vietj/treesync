@@ -26,13 +26,13 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ChangeIterator<E> implements Iterator<ChangeType> {
+public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
 
   /** . */
   private boolean buffered;
 
   /** . */
-  private ChangeType type;
+  private LCSChangeType type;
 
   /** . */
   private E element;
@@ -52,7 +52,7 @@ public class ChangeIterator<E> implements Iterator<ChangeType> {
   /** . */
   private int j;
 
-  ChangeIterator(LCS<E> lcs, E[] elements1, E[] elements2) {
+  LCSChangeIterator(LCS<E> lcs, E[] elements1, E[] elements2) {
     this.buffered = false;
     this.lcs = lcs;
     this.elements1 = elements1;
@@ -61,7 +61,7 @@ public class ChangeIterator<E> implements Iterator<ChangeType> {
     this.j = elements2.length;
   }
 
-  public ChangeType getType() {
+  public LCSChangeType getType() {
     return type;
   }
 
@@ -82,7 +82,7 @@ public class ChangeIterator<E> implements Iterator<ChangeType> {
       E e1 = null;
       E e2 = null;
       if (i > 0 && j > 0 && lcs.equals(e1 = elements1[elements1.length - i], e2 = elements2[elements2.length - j])) {
-        type = ChangeType.KEEP;
+        type = LCSChangeType.KEEP;
         element = e1;
         i--;
         j--;
@@ -91,12 +91,12 @@ public class ChangeIterator<E> implements Iterator<ChangeType> {
         int index1 = i + (j - 1) * lcs.m;
         int index2 = i - 1 + j * lcs.m;
         if (j > 0 && (i == 0  || lcs.matrix[index1] >= lcs.matrix[index2])) {
-          type = ChangeType.ADD;
+          type = LCSChangeType.ADD;
           element = e2 == null ? elements2[elements2.length - j] : e2;
           j--;
           buffered = true;
         } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
-          type = ChangeType.REMOVE;
+          type = LCSChangeType.REMOVE;
           element = e1 == null ? elements1[elements1.length - i] : e1;
           i--;
           buffered = true;
@@ -108,7 +108,7 @@ public class ChangeIterator<E> implements Iterator<ChangeType> {
     return buffered;
   }
 
-  public ChangeType next() {
+  public LCSChangeType next() {
     if (!hasNext()) {
       throw new NoSuchElementException();
     } else {

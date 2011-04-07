@@ -43,11 +43,19 @@ public class NodeContext<N> {
       this.root = root;
    }
 
-   N findById(String id) {
+   public TreeModel<N> getModel() {
+      return model;
+   }
+
+   public N getRoot() {
+      return root;
+   }
+
+   public N findById(String id) {
       return findById(root, id);
    }
 
-   N findById(N node, String id) {
+   public N findById(N node, String id) {
       N found;
       if (model.getId(node).equals(id)) {
          found = node;

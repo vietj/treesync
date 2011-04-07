@@ -35,17 +35,17 @@ public class LCSTestCase extends TestCase {
     return chars;
   }
 
-  private ChangeIterator<Character> diff(String s1, String s2) {
+  private LCSChangeIterator<Character> diff(String s1, String s2) {
     Character[] c1 = chars(s1);
     Character[] c2 = chars(s2);
     return new LCS<Character>().diff(c1, c2);
   }
 
   public void test1() {
-    ChangeIterator<Character> it = diff("", "a");
+    LCSChangeIterator<Character> it = diff("", "a");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
-    assertEquals(ChangeType.ADD, it.next());
+    assertEquals(LCSChangeType.ADD, it.next());
     assertEquals('a', (char)it.getElement());
     assertEquals(0, it.getIndex1());
     assertEquals(1, it.getIndex2());
@@ -53,10 +53,10 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test2() {
-    ChangeIterator<Character> it = diff("a", "");
+    LCSChangeIterator<Character> it = diff("a", "");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
-    assertEquals(ChangeType.REMOVE, it.next());
+    assertEquals(LCSChangeType.REMOVE, it.next());
     assertEquals('a', (char)it.getElement());
     assertEquals(1, it.getIndex1());
     assertEquals(0, it.getIndex2());
@@ -64,10 +64,10 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test3() {
-    ChangeIterator<Character> it = diff("a", "a");
+    LCSChangeIterator<Character> it = diff("a", "a");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
-    assertEquals(ChangeType.KEEP, it.next());
+    assertEquals(LCSChangeType.KEEP, it.next());
     assertEquals('a', (char)it.getElement());
     assertEquals(1, it.getIndex1());
     assertEquals(1, it.getIndex2());
@@ -75,14 +75,14 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test4() {
-    ChangeIterator<Character> it = diff("a", "b");
+    LCSChangeIterator<Character> it = diff("a", "b");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
-    assertEquals(ChangeType.ADD, it.next());
+    assertEquals(LCSChangeType.ADD, it.next());
     assertEquals('b', (char)it.getElement());
     assertEquals(0, it.getIndex1());
     assertEquals(1, it.getIndex2());
-    assertEquals(ChangeType.REMOVE, it.next());
+    assertEquals(LCSChangeType.REMOVE, it.next());
     assertEquals('a', (char)it.getElement());
     assertEquals(1, it.getIndex1());
     assertEquals(1, it.getIndex2());
@@ -90,14 +90,14 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test5() {
-    ChangeIterator<Character> it = diff("", "ab");
+    LCSChangeIterator<Character> it = diff("", "ab");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
-    assertEquals(ChangeType.ADD, it.next());
+    assertEquals(LCSChangeType.ADD, it.next());
     assertEquals('a', (char)it.getElement());
     assertEquals(0, it.getIndex1());
     assertEquals(1, it.getIndex2());
-    assertEquals(ChangeType.ADD, it.next());
+    assertEquals(LCSChangeType.ADD, it.next());
     assertEquals('b', (char)it.getElement());
     assertEquals(0, it.getIndex1());
     assertEquals(2, it.getIndex2());
@@ -105,26 +105,26 @@ public class LCSTestCase extends TestCase {
   }
 
   public void test6() {
-    ChangeIterator<Character> it = diff("abc", "dbe");
+    LCSChangeIterator<Character> it = diff("abc", "dbe");
     assertEquals(0, it.getIndex1());
     assertEquals(0, it.getIndex2());
-    assertEquals(ChangeType.ADD, it.next());
+    assertEquals(LCSChangeType.ADD, it.next());
     assertEquals('d', (char)it.getElement());
     assertEquals(0, it.getIndex1());
     assertEquals(1, it.getIndex2());
-    assertEquals(ChangeType.REMOVE, it.next());
+    assertEquals(LCSChangeType.REMOVE, it.next());
     assertEquals('a', (char)it.getElement());
     assertEquals(1, it.getIndex1());
     assertEquals(1, it.getIndex2());
-    assertEquals(ChangeType.KEEP, it.next());
+    assertEquals(LCSChangeType.KEEP, it.next());
     assertEquals('b', (char)it.getElement());
     assertEquals(2, it.getIndex1());
     assertEquals(2, it.getIndex2());
-    assertEquals(ChangeType.ADD, it.next());
+    assertEquals(LCSChangeType.ADD, it.next());
     assertEquals(2, it.getIndex1());
     assertEquals(3, it.getIndex2());
     assertEquals('e', (char)it.getElement());
-    assertEquals(ChangeType.REMOVE, it.next());
+    assertEquals(LCSChangeType.REMOVE, it.next());
     assertEquals('c', (char)it.getElement());
     assertEquals(3, it.getIndex1());
     assertEquals(3, it.getIndex2());

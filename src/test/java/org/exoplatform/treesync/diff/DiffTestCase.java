@@ -17,15 +17,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync;
+package org.exoplatform.treesync.diff;
 
 import junit.framework.TestCase;
+import org.exoplatform.treesync.SimpleModel;
+import org.exoplatform.treesync.SimpleNode;
+import org.exoplatform.treesync.diff.Diff;
+import org.exoplatform.treesync.diff.DiffChangeIterator;
+import org.exoplatform.treesync.diff.DiffChangeType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class Diff2TestCase extends TestCase {
+public class DiffTestCase extends TestCase {
 
    /** . */
    private final Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleModel.INSTANCE, SimpleModel.INSTANCE);
