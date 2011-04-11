@@ -28,21 +28,21 @@ import java.util.*;
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
-public class DiffChangeIterator<N1, N2, H> implements Iterator<DiffChangeType> {
+public class DiffChangeIterator<L1, N1, L2, N2, H> implements Iterator<DiffChangeType> {
 
    /** . */
-   private final Diff<N1, N2, H> diff;
+   private final Diff<L1, N1, L2, N2, H> diff;
 
    /** . */
    private Frame frame;
 
    /** . */
-   private final SyncContext<N1, H> context1;
+   private final SyncContext<L1, N1, H> context1;
 
    /** . */
-   private final SyncContext<N2, H> context2;
+   private final SyncContext<L2, N2, H> context2;
 
-   DiffChangeIterator(Diff<N1, N2, H> diff, SyncContext<N1, H> context1, SyncContext<N2, H> context2) {
+   DiffChangeIterator(Diff<L1, N1, L2, N2, H> diff, SyncContext<L1, N1, H> context1, SyncContext<L2, N2, H> context2) {
       this.diff = diff;
       this.context1 = context1;
       this.context2 = context2;
@@ -92,19 +92,19 @@ public class DiffChangeIterator<N1, N2, H> implements Iterator<DiffChangeType> {
       private N2 node2;
 
       /** . */
-      private List<H> children1;
+      private L1 children1;
 
       /** . */
       private Iterator<H> it1;
 
       /** . */
-      private List<H> children2;
+      private L2 children2;
 
       /** . */
       private Iterator<H> it2;
 
       /** . */
-      private LCSChangeIterator<H> it;
+      private LCSChangeIterator<L1, L2, H> it;
 
       /** . */
       private Status previous;
@@ -158,10 +158,13 @@ public class DiffChangeIterator<N1, N2, H> implements Iterator<DiffChangeType> {
                   return hasNext();
                case ENTER:
                   frame.children1 = context1.getModel().getChildren(frame.node1);
-                  frame.it1 = frame.children1.iterator();
+                  frame.it1 = diff.adapter1.iterator(frame.children1);
                   frame.children2 = context2.getModel().getChildren(frame.node2);
-                  frame.it2 = frame.children2.iterator();
-                  frame.it = LCS.create(diff.comparator).perform(frame.children1, frame.children2);
+                  frame.it2 = diff.adapter2.iterator(frame.children2);
+                  frame.it = LCS.create(
+                        diff.adapter1,
+                        diff.adapter2,
+                        diff.comparator).perform(frame.children1, frame.children2);
                case ADDED:
                case REMOVED:
                case MOVED_OUT:
@@ -175,7 +178,7 @@ public class DiffChangeIterator<N1, N2, H> implements Iterator<DiffChangeType> {
                            return hasNext();
                         case ADD:
                            frame.it2.next();
-                           H addedHandle = frame.children2.get(frame.it.getIndex2() - 1);
+                           H addedHandle = diff.adapter2.get(frame.children2, frame.it.getIndex2() - 1);
                            N2 added = context2.getModel().getChild(frame.node2, addedHandle);
                            String addedId = context2.getModel().getId(added);
                            N1 a = context1.findById(addedId);
@@ -191,7 +194,7 @@ public class DiffChangeIterator<N1, N2, H> implements Iterator<DiffChangeType> {
                            break;
                         case REMOVE:
                            frame.it1.next();
-                           H removedHandle = frame.children1.get(frame.it.getIndex1() - 1);
+                           H removedHandle = diff.adapter1.get(frame.children1, frame.it.getIndex1() - 1);
                            N1 removed = context1.getModel().getChild(frame.node1, removedHandle);
                            String removedId = context1.getModel().getId(removed);
                            N2 b = context2.findById(removedId);

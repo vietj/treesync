@@ -19,19 +19,27 @@
 
 package org.exoplatform.treesync;
 
+import java.util.Iterator;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SyncContext<N, H> {
+public class SyncContext<L, N, H> {
 
    /** . */
-   final SyncModel<N, H> model;
+   final ListAdapter<L, H> adapter;
+
+   /** . */
+   final SyncModel<L, N, H> model;
 
    /** . */
    final N root;
 
-   public SyncContext(SyncModel<N, H> model, N root) throws NullPointerException {
+   public SyncContext(ListAdapter<L, H> adapter, SyncModel<L, N, H> model, N root) throws NullPointerException {
+      if (adapter == null) {
+         throw new NullPointerException();
+      }
       if (model == null) {
          throw new NullPointerException();
       }
@@ -39,11 +47,13 @@ public class SyncContext<N, H> {
          throw new NullPointerException();
       }
 
+      //
+      this.adapter = adapter;
       this.model = model;
       this.root = root;
    }
 
-   public SyncModel<N, H> getModel() {
+   public SyncModel<L, N, H> getModel() {
       return model;
    }
 
@@ -61,7 +71,10 @@ public class SyncContext<N, H> {
          found = node;
       } else {
          found = null;
-         for (H handle : model.getChildren(node)) {
+         L children = model.getChildren(node);
+         Iterator<H> i = adapter.iterator(children);
+         while (i.hasNext()) {
+            H handle = i.next();
             N child = model.getChild(node, handle);
             found = findById(child, id);
             if (found != null) {

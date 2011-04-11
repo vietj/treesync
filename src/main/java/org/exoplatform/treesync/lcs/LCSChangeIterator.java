@@ -20,14 +20,13 @@
 package org.exoplatform.treesync.lcs;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
+public class LCSChangeIterator<L1, L2, E> implements Iterator<LCSChangeType> {
 
   /** . */
   private boolean buffered;
@@ -39,13 +38,19 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
   private E element;
 
   /** . */
-  private final LCS<E> lcs;
+  private final LCS<L1, L2, E> lcs;
 
   /** . */
-  private final List<E> elements1;
+  private final L1 elements1;
 
   /** . */
-  private final List<E> elements2;
+  private final L2 elements2;
+
+  /** . */
+  private int size1;
+
+  /** . */
+  private int size2;
 
   /** . */
   private int i;
@@ -53,13 +58,15 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
   /** . */
   private int j;
 
-  LCSChangeIterator(LCS<E> lcs, List<E> elements1, List<E> elements2) {
+  LCSChangeIterator(LCS<L1, L2, E> lcs, L1 elements1, L2 elements2, int size1, int size2) {
     this.buffered = false;
     this.lcs = lcs;
     this.elements1 = elements1;
     this.elements2 = elements2;
-    this.i = elements1.size();
-    this.j = elements2.size();
+    this.size1 = size1;
+    this.size2 = size2;
+    this.i = size1;
+    this.j = size2;
   }
 
   public LCSChangeType getType() {
@@ -71,18 +78,18 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
   }
 
   public int getIndex1() {
-    return elements1.size() - i;
+    return size1 - i;
   }
 
   public int getIndex2() {
-    return elements2.size() - j;
+    return size2 - j;
   }
 
   public boolean hasNext() {
     if (!buffered) {
       E e1 = null;
       E e2 = null;
-      if (i > 0 && j > 0 && lcs.equals(e1 = elements1.get(elements1.size() - i), e2 = elements2.get(elements2.size() - j))) {
+      if (i > 0 && j > 0 && lcs.equals(e1 = lcs.adapter1.get(elements1, size1 - i), e2 = lcs.adapter2.get(elements2, size2 - j))) {
         type = LCSChangeType.KEEP;
         element = e1;
         i--;
@@ -93,12 +100,12 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
         int index2 = i - 1 + j * lcs.m;
         if (j > 0 && (i == 0  || lcs.matrix[index1] >= lcs.matrix[index2])) {
           type = LCSChangeType.ADD;
-          element = e2 == null ? elements2.get(elements2.size() - j) : e2;
+          element = e2 == null ? lcs.adapter2.get(elements2, size2 - j) : e2;
           j--;
           buffered = true;
         } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
           type = LCSChangeType.REMOVE;
-          element = e1 == null ? elements1.get(elements1.size() - i) : e1;
+          element = e1 == null ? lcs.adapter1.get(elements1, size1 - i) : e1;
           i--;
           buffered = true;
         } else {

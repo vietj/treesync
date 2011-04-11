@@ -19,17 +19,18 @@
 
 package org.exoplatform.treesync.lcs;
 
+import org.exoplatform.treesync.ListAdapter;
+
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class LCS<E> {
+public class LCS<L1, L2, E> {
 
-  public static <E extends Comparable<E>> LCS<E> create() {
-    return new LCS<E>() {
+  public static <L1, L2, E extends Comparable<E>> LCS<L1, L2, E> create(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
+    return new LCS<L1, L2, E>(adapter1, adapter2) {
       @Override
       protected boolean equals(E e1, E e2) {
         return e1.compareTo(e2) == 0;
@@ -37,8 +38,8 @@ public class LCS<E> {
     };
   }
 
-  public static <E> LCS<E> create(final Comparator<E> comparator) {
-    return new LCS<E>() {
+  public static <L1, L2, E> LCS<L1, L2, E> create(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2, final Comparator<E> comparator) {
+    return new LCS<L1, L2, E>(adapter1, adapter2) {
       @Override
       protected boolean equals(E e1, E e2) {
         return comparator.compare(e1, e2) == 0;
@@ -58,15 +59,25 @@ public class LCS<E> {
   /** . */
   int n;
 
-  public LCS() {
+  /** . */
+  final ListAdapter<L1, E> adapter1;
+
+  /** . */
+  final ListAdapter<L2, E> adapter2;
+
+  public LCS(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
     this.matrix = EMPTY;
     this.m = -1;
     this.n = -1;
+    this.adapter1 = adapter1;
+    this.adapter2 = adapter2;
   }
 
-  public final LCSChangeIterator<E> perform(List<E> elements1, List<E> elements2) {
-    m = 1 + elements1.size();
-    n = 1 + elements2.size();
+  public final LCSChangeIterator<L1, L2, E> perform(L1 elements1, L2 elements2) {
+    int size1 = adapter1.size(elements1);
+    int size2 = adapter2.size(elements2);
+    m = 1 + size1;
+    n = 1 + size2;
     int s = m * n;
     if (matrix.length < s) {
       matrix = new int[s];
@@ -82,7 +93,7 @@ public class LCS<E> {
       for (int j = 1;j < n;j++) {
         int index = i + j * m;
         int v;
-        if (equals(elements1.get(elements1.size() - i), elements2.get(elements2.size() - j))) {
+        if (equals(adapter1.get(elements1, size1 - i), adapter2.get(elements2, size2 - j))) {
           v = matrix[index - m - 1] + 1;
         } else {
           int v1 = matrix[index - 1];
@@ -94,7 +105,7 @@ public class LCS<E> {
     }
 
     //
-    return new LCSChangeIterator<E>(this, elements1, elements2);
+    return new LCSChangeIterator<L1, L2, E>(this, elements1, elements2, size1, size2);
   }
 
   protected boolean equals(E e1, E e2) {

@@ -25,10 +25,10 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleModel implements SyncModel<SimpleNode, SimpleNode> {
+public class SimpleModel implements SyncModel<List<SimpleNode>, SimpleNode, SimpleNode> {
 
    /** . */
-   public static final SyncModel<SimpleNode, SimpleNode> INSTANCE = new SimpleModel();
+   public static final SyncModel<List<SimpleNode>, SimpleNode, SimpleNode> INSTANCE = new SimpleModel();
 
    public String getId(SimpleNode node) {
       return node.getId();

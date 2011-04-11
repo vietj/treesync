@@ -19,16 +19,25 @@
 
 package org.exoplatform.treesync;
 
+import org.exoplatform.treesync.ListAdapter;
+
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
  */
-public interface SyncModel<L, N, H> {
+public class JavaUtilListAdapter<E> implements ListAdapter<List<E>, E> {
 
-   String getId(N node);
+   public int size(List<E> list) {
+      return list.size();
+   }
 
-   L getChildren(N node);
+   public E get(List<E> list, int index) {
+      return list.get(index);
+   }
 
-   N getChild(N node, H handle);
-
+   public Iterator<E> iterator(List<E> list) {
+      return list.iterator();
+   }
 }
