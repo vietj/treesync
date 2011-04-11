@@ -19,8 +19,8 @@
 
 package org.exoplatform.treesync.diff;
 
-import org.exoplatform.treesync.NodeContext;
-import org.exoplatform.treesync.TreeModel;
+import org.exoplatform.treesync.SyncContext;
+import org.exoplatform.treesync.SyncModel;
 import org.exoplatform.treesync.lcs.LCSChangeIterator;
 import org.exoplatform.treesync.lcs.LCS;
 
@@ -41,12 +41,12 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
    private Frame frame;
 
    /** . */
-   private final NodeContext<N1> context1;
+   private final SyncContext<N1> context1;
 
    /** . */
-   private final NodeContext<N2> context2;
+   private final SyncContext<N2> context2;
 
-   DiffChangeIterator(Diff<N1, N2> diff, NodeContext<N1> context1, NodeContext<N2> context2) {
+   DiffChangeIterator(Diff<N1, N2> diff, SyncContext<N1> context1, SyncContext<N2> context2) {
       this.diff = diff;
       this.context1 = context1;
       this.context2 = context2;
@@ -251,7 +251,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
       throw new UnsupportedOperationException();
    }
 
-   private static <N> String[] ids(List<N> nodes, TreeModel<N> model) {
+   private static <N> String[] ids(List<N> nodes, SyncModel<N> model) {
       int size = nodes.size();
       String[] ids = new String[size];
       if (nodes instanceof RandomAccess) {

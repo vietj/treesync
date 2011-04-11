@@ -19,8 +19,8 @@
 
 package org.exoplatform.treesync.diff;
 
-import org.exoplatform.treesync.NodeContext;
-import org.exoplatform.treesync.TreeModel;
+import org.exoplatform.treesync.SyncContext;
+import org.exoplatform.treesync.SyncModel;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -29,17 +29,17 @@ import org.exoplatform.treesync.TreeModel;
 public class Diff<N1, N2> {
 
    /** . */
-   final TreeModel<N1> model1;
+   final SyncModel<N1> model1;
 
    /** . */
-   final TreeModel<N2> model2;
+   final SyncModel<N2> model2;
 
-   public Diff(TreeModel<N1> model1, TreeModel<N2> model2) {
+   public Diff(SyncModel<N1> model1, SyncModel<N2> model2) {
       this.model1 = model1;
       this.model2 = model2;
    }
 
    public DiffChangeIterator<N1, N2> perform(N1 node1, N2 node2) {
-      return new DiffChangeIterator<N1, N2>(this, new NodeContext<N1>(model1, node1), new NodeContext<N2>(model2, node2));
+      return new DiffChangeIterator<N1, N2>(this, new SyncContext<N1>(model1, node1), new SyncContext<N2>(model2, node2));
    }
 }

@@ -25,7 +25,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface TreeModel<N> {
+public interface SyncModel<N> {
 
    String getId(N node);
 

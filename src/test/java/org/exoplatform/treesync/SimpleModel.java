@@ -25,10 +25,10 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleModel implements TreeModel<SimpleNode> {
+public class SimpleModel implements SyncModel<SimpleNode> {
 
    /** . */
-   public static final TreeModel<SimpleNode> INSTANCE = new SimpleModel();
+   public static final SyncModel<SimpleNode> INSTANCE = new SimpleModel();
 
    public String getId(SimpleNode node) {
       return node.getId();
