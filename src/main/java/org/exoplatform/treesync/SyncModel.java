@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -28,8 +28,6 @@ import java.util.List;
 public interface SyncModel<N> {
 
    String getId(N node);
-
-   N getParent(N node);
 
    List<N> getChildren(N node);
 
