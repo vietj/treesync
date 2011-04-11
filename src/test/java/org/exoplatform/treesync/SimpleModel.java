@@ -39,6 +39,10 @@ public class SimpleModel implements SyncModel<SimpleNode, SimpleNode> {
    }
 
    public SimpleNode getChild(SimpleNode node, SimpleNode handle) {
-      return handle;
+      if (node.getChildren().contains(handle)) {
+         return handle;
+      } else {
+         return null;
+      }
    }
 }
