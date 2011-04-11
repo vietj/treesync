@@ -22,9 +22,8 @@ package org.exoplatform.treesync.diff;
 import junit.framework.TestCase;
 import org.exoplatform.treesync.SimpleModel;
 import org.exoplatform.treesync.SimpleNode;
-import org.exoplatform.treesync.diff.Diff;
-import org.exoplatform.treesync.diff.DiffChangeIterator;
-import org.exoplatform.treesync.diff.DiffChangeType;
+
+import java.util.Comparator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,12 +32,19 @@ import org.exoplatform.treesync.diff.DiffChangeType;
 public class DiffTestCase extends TestCase {
 
    /** . */
-   private final Diff<SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode>(SimpleModel.INSTANCE, SimpleModel.INSTANCE);
+   private final Diff<SimpleNode, SimpleNode, SimpleNode> diff = new Diff<SimpleNode, SimpleNode, SimpleNode>(
+         SimpleModel.INSTANCE,
+         SimpleModel.INSTANCE,
+         new Comparator<SimpleNode>() {
+            public int compare(SimpleNode o1, SimpleNode o2) {
+               return o1.getId().equals(o2.getId()) ? 0 : 1;
+            }
+         });
 
    public void testSyncException() {
       SimpleNode node1 = new SimpleNode();
       SimpleNode node2 = new SimpleNode();
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ERROR, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -48,7 +54,7 @@ public class DiffTestCase extends TestCase {
    public void testEmpty() throws Exception {
       SimpleNode node1 = new SimpleNode();
       SimpleNode node2 = node1.clone();
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -63,7 +69,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode child1 = node1.addChild();
       SimpleNode node2 = node1.clone();
       SimpleNode child2 = node2.getChild(child1.getId());
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -84,7 +90,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode child1 = node1.addChild();
       SimpleNode node2 = node1.clone();
       node2.getChild(child1.getId()).destroy();
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -101,7 +107,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode node1 = new SimpleNode();
       SimpleNode node2 = node1.clone();
       SimpleNode child2 = node2.addChild();
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -123,7 +129,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode b2 = node2.getChild(b1.getId());
       SimpleNode c2 = a2.getChild(c1.getId());
       b2.addChild(c2);
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -170,7 +176,7 @@ public class DiffTestCase extends TestCase {
       SimpleNode d2 = c2.getChild(d1.getId());
       b2.addChild(c2);
       node2.addChild(d2);
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -231,7 +237,7 @@ public class DiffTestCase extends TestCase {
       a2.destroy();
 
       //
-      DiffChangeIterator<SimpleNode, SimpleNode> it = diff.perform(node1, node2);
+      DiffChangeIterator<SimpleNode, SimpleNode, SimpleNode> it = diff.perform(node1, node2);
       assertEquals(DiffChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());

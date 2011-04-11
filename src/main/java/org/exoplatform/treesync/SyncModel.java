@@ -25,10 +25,12 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface SyncModel<N> {
+public interface SyncModel<N, H> {
 
    String getId(N node);
 
-   List<N> getChildren(N node);
+   List<H> getChildren(N node);
+
+   N getChild(N node, H handle);
 
 }

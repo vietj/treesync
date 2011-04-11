@@ -23,15 +23,15 @@ package org.exoplatform.treesync;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SyncContext<N> {
+public class SyncContext<N, H> {
 
    /** . */
-   final SyncModel<N> model;
+   final SyncModel<N, H> model;
 
    /** . */
    final N root;
 
-   public SyncContext(SyncModel<N> model, N root) throws NullPointerException {
+   public SyncContext(SyncModel<N, H> model, N root) throws NullPointerException {
       if (model == null) {
          throw new NullPointerException();
       }
@@ -43,7 +43,7 @@ public class SyncContext<N> {
       this.root = root;
    }
 
-   public SyncModel<N> getModel() {
+   public SyncModel<N, H> getModel() {
       return model;
    }
 
@@ -55,13 +55,14 @@ public class SyncContext<N> {
       return findById(root, id);
    }
 
-   public N findById(N node, String id) {
+   private N findById(N node, String id) {
       N found;
       if (model.getId(node).equals(id)) {
          found = node;
       } else {
          found = null;
-         for (N child : model.getChildren(node)) {
+         for (H handle : model.getChildren(node)) {
+            N child = model.getChild(node, handle);
             found = findById(child, id);
             if (found != null) {
                break;
