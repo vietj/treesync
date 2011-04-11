@@ -21,23 +21,26 @@ package org.exoplatform.treesync.lcs;
 
 import junit.framework.TestCase;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class LCSTestCase extends TestCase {
 
-  private static Character[] chars(String s) {
+  private static List<Character> chars(String s) {
     Character[] chars = new Character[s.length()];
     for (int i = 0;i < chars.length;i++) {
       chars[i] = s.charAt(i);
     }
-    return chars;
+    return Arrays.asList(chars);
   }
 
   private LCSChangeIterator<Character> diff(String s1, String s2) {
-    Character[] c1 = chars(s1);
-    Character[] c2 = chars(s2);
+    List<Character> c1 = chars(s1);
+    List<Character> c2 = chars(s2);
     return new LCS<Character>().perform(c1, c2);
   }
 

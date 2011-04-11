@@ -20,6 +20,7 @@
 package org.exoplatform.treesync.lcs;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -41,10 +42,10 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
   private final LCS<E> lcs;
 
   /** . */
-  private final E[] elements1;
+  private final List<E> elements1;
 
   /** . */
-  private final E[] elements2;
+  private final List<E> elements2;
 
   /** . */
   private int i;
@@ -52,13 +53,13 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
   /** . */
   private int j;
 
-  LCSChangeIterator(LCS<E> lcs, E[] elements1, E[] elements2) {
+  LCSChangeIterator(LCS<E> lcs, List<E> elements1, List<E> elements2) {
     this.buffered = false;
     this.lcs = lcs;
     this.elements1 = elements1;
     this.elements2 = elements2;
-    this.i = elements1.length;
-    this.j = elements2.length;
+    this.i = elements1.size();
+    this.j = elements2.size();
   }
 
   public LCSChangeType getType() {
@@ -70,18 +71,18 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
   }
 
   public int getIndex1() {
-    return elements1.length - i;
+    return elements1.size() - i;
   }
 
   public int getIndex2() {
-    return elements2.length - j;
+    return elements2.size() - j;
   }
 
   public boolean hasNext() {
     if (!buffered) {
       E e1 = null;
       E e2 = null;
-      if (i > 0 && j > 0 && lcs.equals(e1 = elements1[elements1.length - i], e2 = elements2[elements2.length - j])) {
+      if (i > 0 && j > 0 && lcs.equals(e1 = elements1.get(elements1.size() - i), e2 = elements2.get(elements2.size() - j))) {
         type = LCSChangeType.KEEP;
         element = e1;
         i--;
@@ -92,12 +93,12 @@ public class LCSChangeIterator<E> implements Iterator<LCSChangeType> {
         int index2 = i - 1 + j * lcs.m;
         if (j > 0 && (i == 0  || lcs.matrix[index1] >= lcs.matrix[index2])) {
           type = LCSChangeType.ADD;
-          element = e2 == null ? elements2[elements2.length - j] : e2;
+          element = e2 == null ? elements2.get(elements2.size() - j) : e2;
           j--;
           buffered = true;
         } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
           type = LCSChangeType.REMOVE;
-          element = e1 == null ? elements1[elements1.length - i] : e1;
+          element = e1 == null ? elements1.get(elements1.size() - i) : e1;
           i--;
           buffered = true;
         } else {

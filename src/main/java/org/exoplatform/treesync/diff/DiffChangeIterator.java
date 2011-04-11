@@ -24,10 +24,7 @@ import org.exoplatform.treesync.SyncModel;
 import org.exoplatform.treesync.lcs.LCSChangeIterator;
 import org.exoplatform.treesync.lcs.LCS;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.RandomAccess;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -99,7 +96,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
       private List<N1> children1;
 
       /** . */
-      private String[] childrenIds1;
+      private List<String> childrenIds1;
 
       /** . */
       private Iterator<N1> it1;
@@ -108,7 +105,7 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
       private List<N2> children2;
 
       /** . */
-      private String[] childrenIds2;
+      private List<String> childrenIds2;
 
       /** . */
       private Iterator<N2> it2;
@@ -251,17 +248,17 @@ public class DiffChangeIterator<N1, N2> implements Iterator<DiffChangeType> {
       throw new UnsupportedOperationException();
    }
 
-   private static <N> String[] ids(List<N> nodes, SyncModel<N> model) {
+   private static <N> List<String> ids(List<N> nodes, SyncModel<N> model) {
       int size = nodes.size();
-      String[] ids = new String[size];
+      ArrayList<String> ids = new ArrayList<String>(size);
       if (nodes instanceof RandomAccess) {
          for (int i = 0; i < size; i++) {
-            ids[i] = model.getId(nodes.get(i));
+            ids.add(model.getId(nodes.get(i)));
          }
       } else {
          int i = 0;
          for (N node : nodes) {
-            ids[i++] = model.getId(node);
+            ids.add(model.getId(node));
          }
       }
       return ids;

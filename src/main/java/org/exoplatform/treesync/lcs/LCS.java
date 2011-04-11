@@ -20,6 +20,7 @@
 package org.exoplatform.treesync.lcs;
 
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -63,9 +64,9 @@ public class LCS<E> {
     this.n = -1;
   }
 
-  public final LCSChangeIterator<E> perform(E[] elements1, E[] elements2) {
-    m = 1 + elements1.length;
-    n = 1 + elements2.length;
+  public final LCSChangeIterator<E> perform(List<E> elements1, List<E> elements2) {
+    m = 1 + elements1.size();
+    n = 1 + elements2.size();
     int s = m * n;
     if (matrix.length < s) {
       matrix = new int[s];
@@ -81,7 +82,7 @@ public class LCS<E> {
       for (int j = 1;j < n;j++) {
         int index = i + j * m;
         int v;
-        if (equals(elements1[elements1.length - i], elements2[elements2.length - j])) {
+        if (equals(elements1.get(elements1.size() - i), elements2.get(elements2.size() - j))) {
           v = matrix[index - m - 1] + 1;
         } else {
           int v1 = matrix[index - 1];
