@@ -136,6 +136,6 @@ public class SimpleNode {
 
   @Override
   public String toString() {
-    return "SimpleNode[id=" + id + ",identity=" + System.identityHashCode(this) + "]";
+    return "SimpleNode[id=" + id + ",@=" + System.identityHashCode(this) + "]";
   }
 }
