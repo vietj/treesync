@@ -30,8 +30,6 @@ public interface ListAdapter<L, E> {
 
    int size(L list);
 
-   E get(L list, int index);
-
-   Iterator<E> iterator(L list);
+   Iterator<E> iterator(L list, boolean reverse);
 
 }

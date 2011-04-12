@@ -22,6 +22,7 @@ package org.exoplatform.treesync.lcs;
 import org.exoplatform.treesync.ListAdapter;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -89,11 +90,14 @@ public class LCS<L1, L2, E> {
         matrix[j * m] = 0;
       }
     }
+    Iterator<E> itI = adapter1.iterator(elements1, true);
     for (int i = 1;i < m;i++) {
+      E abc = itI.next();
+      Iterator<E> itJ = adapter2.iterator(elements2, true);
       for (int j = 1;j < n;j++) {
         int index = i + j * m;
         int v;
-        if (equals(adapter1.get(elements1, size1 - i), adapter2.get(elements2, size2 - j))) {
+         if (equals(abc, itJ.next())) {
           v = matrix[index - m - 1] + 1;
         } else {
           int v1 = matrix[index - 1];

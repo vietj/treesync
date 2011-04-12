@@ -19,10 +19,9 @@
 
 package org.exoplatform.treesync;
 
-import org.exoplatform.treesync.ListAdapter;
-
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,11 +32,22 @@ public class JavaUtilListAdapter<E> implements ListAdapter<List<E>, E> {
       return list.size();
    }
 
-   public E get(List<E> list, int index) {
-      return list.get(index);
-   }
-
-   public Iterator<E> iterator(List<E> list) {
-      return list.iterator();
+   public Iterator<E> iterator(List<E> list, boolean reverse) {
+      if (reverse) {
+         final ListIterator<E> it = list.listIterator(list.size());
+         return new Iterator<E>() {
+            public boolean hasNext() {
+               return it.hasPrevious();
+            }
+            public E next() {
+               return it.previous();
+            }
+            public void remove() {
+               throw new UnsupportedOperationException();
+            }
+         };
+      } else {
+         return list.iterator();
+      }
    }
 }

@@ -158,9 +158,9 @@ public class DiffChangeIterator<L1, N1, L2, N2, H> implements Iterator<DiffChang
                   return hasNext();
                case ENTER:
                   frame.children1 = context1.getModel().getChildren(frame.node1);
-                  frame.it1 = diff.adapter1.iterator(frame.children1);
+                  frame.it1 = diff.adapter1.iterator(frame.children1, false);
                   frame.children2 = context2.getModel().getChildren(frame.node2);
-                  frame.it2 = diff.adapter2.iterator(frame.children2);
+                  frame.it2 = diff.adapter2.iterator(frame.children2, false);
                   frame.it = LCS.create(
                         diff.adapter1,
                         diff.adapter2,

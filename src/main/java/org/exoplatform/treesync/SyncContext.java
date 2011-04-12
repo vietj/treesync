@@ -72,7 +72,7 @@ public class SyncContext<L, N, H> {
       } else {
          found = null;
          L children = model.getChildren(node);
-         Iterator<H> i = adapter.iterator(children);
+         Iterator<H> i = adapter.iterator(children, false);
          while (i.hasNext()) {
             H handle = i.next();
             N child = model.getChild(node, handle);
