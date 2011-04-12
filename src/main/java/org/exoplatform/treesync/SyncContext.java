@@ -19,8 +19,6 @@
 
 package org.exoplatform.treesync;
 
-import java.util.Iterator;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -61,28 +59,7 @@ public class SyncContext<L, N, H> {
       return root;
    }
 
-   public N findById(String id) {
-      return findById(root, id);
+   public N findByHandle(H handle) {
+      return model.getDescendant(root, handle);
    }
-
-   private N findById(N node, String id) {
-      N found;
-      if (model.getId(node).equals(id)) {
-         found = node;
-      } else {
-         found = null;
-         L children = model.getChildren(node);
-         Iterator<H> i = adapter.iterator(children, false);
-         while (i.hasNext()) {
-            H handle = i.next();
-            N child = model.getChild(node, handle);
-            found = findById(child, id);
-            if (found != null) {
-               break;
-            }
-         }
-      }
-      return found;
-   }
-
 }

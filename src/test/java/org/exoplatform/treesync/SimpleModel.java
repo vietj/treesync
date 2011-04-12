@@ -25,24 +25,20 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleModel implements SyncModel<List<SimpleNode>, SimpleNode, SimpleNode> {
+public class SimpleModel implements SyncModel<List<String>, SimpleNode, String> {
 
    /** . */
-   public static final SyncModel<List<SimpleNode>, SimpleNode, SimpleNode> INSTANCE = new SimpleModel();
+   public static final SyncModel<List<String>, SimpleNode, String> INSTANCE = new SimpleModel();
 
-   public String getId(SimpleNode node) {
+   public String getHandle(SimpleNode node) {
       return node.getId();
    }
 
-   public List<SimpleNode> getChildren(SimpleNode node) {
-      return node.getChildren();
+   public List<String> getChildren(SimpleNode node) {
+      return node.getChildrenIds();
    }
 
-   public SimpleNode getChild(SimpleNode node, SimpleNode handle) {
-      if (node.getChildren().contains(handle)) {
-         return handle;
-      } else {
-         return null;
-      }
+   public SimpleNode getDescendant(SimpleNode node, String handle) {
+      return node.getDescendant(handle);
    }
 }

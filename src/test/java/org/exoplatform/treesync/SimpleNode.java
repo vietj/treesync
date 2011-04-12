@@ -19,6 +19,7 @@
 
 package org.exoplatform.treesync;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -111,6 +112,19 @@ public class SimpleNode {
     return null;
   }
 
+   public SimpleNode getDescendant(String id) {
+     SimpleNode descendant = getChild(id);
+     if (descendant == null) {
+       for (SimpleNode child : children) {
+         descendant = child.getDescendant(id);
+         if (descendant != null) {
+           break;
+         }
+       }
+     }
+     return descendant;
+   }
+
   public void destroy() {
     if (parent != null) {
       for (Iterator<SimpleNode> i = parent.children.iterator();i.hasNext();) {
@@ -124,6 +138,21 @@ public class SimpleNode {
     for (SimpleNode child : children) {
       child.parent = null;
     }
+  }
+
+  private final List<String> childrenIds = new AbstractList<String>() {
+     @Override
+     public String get(int index) {
+       return children.get(index).id;
+     }
+     @Override
+     public int size() {
+        return children.size();
+     }
+  };
+
+  public List<String> getChildrenIds() {
+    return childrenIds;
   }
 
   public List<SimpleNode> getChildren() {

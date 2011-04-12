@@ -25,10 +25,10 @@ package org.exoplatform.treesync;
  */
 public interface SyncModel<L, N, H> {
 
-   String getId(N node);
+   H getHandle(N node);
 
    L getChildren(N node);
 
-   N getChild(N node, H handle);
+   N getDescendant(N node, H handle);
 
 }
