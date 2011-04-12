@@ -178,7 +178,7 @@ public class DiffChangeIterator<L1, N1, L2, N2, H> implements Iterator<DiffChang
                            return hasNext();
                         case ADD:
                            frame.it2.next();
-                           H addedHandle = diff.adapter2.get(frame.children2, frame.it.getIndex2() - 1);
+                           H addedHandle = frame.it.getElement();
                            N2 added = context2.getModel().getChild(frame.node2, addedHandle);
                            String addedId = context2.getModel().getId(added);
                            N1 a = context1.findById(addedId);
@@ -194,7 +194,7 @@ public class DiffChangeIterator<L1, N1, L2, N2, H> implements Iterator<DiffChang
                            break;
                         case REMOVE:
                            frame.it1.next();
-                           H removedHandle = diff.adapter1.get(frame.children1, frame.it.getIndex1() - 1);
+                           H removedHandle = frame.it.getElement();
                            N1 removed = context1.getModel().getChild(frame.node1, removedHandle);
                            String removedId = context1.getModel().getId(removed);
                            N2 b = context2.findById(removedId);
