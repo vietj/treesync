@@ -118,11 +118,51 @@ public class DiffTestCase extends TestCase {
       assertEquals(DiffChangeType.ADDED, it.next());
       assertSame(null, it.getSource());
       assertSame(child2, it.getDestination());
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child2, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child2, it.getDestination());
       assertEquals(DiffChangeType.LEAVE, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
       assertFalse(it.hasNext());
    }
+
+   public void testRecurseAdd() throws Exception {
+      SimpleNode node1 = new SimpleNode();
+      SimpleNode node2 = node1.clone();
+      SimpleNode child2 = node2.addChild();
+      SimpleNode child3 = child2.addChild();
+      DiffChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.perform(node1, node2);
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(node1, it.getSource());
+      assertSame(node2, it.getDestination());
+      assertEquals(DiffChangeType.ADDED, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child2, it.getDestination());
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child2, it.getDestination());
+      assertEquals(DiffChangeType.ADDED, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child3, it.getDestination());
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child3, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child3, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(null, it.getSource());
+      assertSame(child2, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(node1, it.getSource());
+      assertSame(node2, it.getDestination());
+      assertFalse(it.hasNext());
+   }
+
    public void testMove() throws Exception {
       SimpleNode node1 = new SimpleNode();
       SimpleNode a1 = node1.addChild();
@@ -262,6 +302,54 @@ public class DiffTestCase extends TestCase {
       assertSame(b2, it.getDestination());
       assertEquals(DiffChangeType.LEAVE, it.next());
       assertSame(c1, it.getSource());
+      assertSame(c2, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(node1, it.getSource());
+      assertSame(node2, it.getDestination());
+      assertFalse(it.hasNext());
+   }
+
+   public void testMovedToAddedParent() throws Exception {
+      SimpleNode node1 = new SimpleNode();
+      SimpleNode a1 = node1.addChild();
+      SimpleNode b1 = a1.addChild();
+      SimpleNode node2 = node1.clone();
+      SimpleNode a2 = node2.getChild(a1.getId());
+      SimpleNode b2 = a2.getChild(b1.getId());
+      SimpleNode c2 = node2.addChild();
+      c2.addChild(b2);
+
+      //
+      DiffChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.perform(node1, node2);
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(node1, it.getSource());
+      assertSame(node2, it.getDestination());
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(a1, it.getSource());
+      assertSame(a2, it.getDestination());
+      assertEquals(DiffChangeType.MOVED_OUT, it.next());
+      assertSame(b1, it.getSource());
+      assertSame(b2, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(a1, it.getSource());
+      assertSame(a2, it.getDestination());
+      assertEquals(DiffChangeType.ADDED, it.next());
+      assertSame(null, it.getSource());
+      assertSame(c2, it.getDestination());
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(null, it.getSource());
+      assertSame(c2, it.getDestination());
+      assertEquals(DiffChangeType.MOVED_IN, it.next());
+      assertSame(b1, it.getSource());
+      assertSame(b2, it.getDestination());
+      assertEquals(DiffChangeType.ENTER, it.next());
+      assertSame(b1, it.getSource());
+      assertSame(b2, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(b1, it.getSource());
+      assertSame(b2, it.getDestination());
+      assertEquals(DiffChangeType.LEAVE, it.next());
+      assertSame(null, it.getSource());
       assertSame(c2, it.getDestination());
       assertEquals(DiffChangeType.LEAVE, it.next());
       assertSame(node1, it.getSource());
