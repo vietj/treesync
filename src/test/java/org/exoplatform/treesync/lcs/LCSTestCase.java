@@ -134,4 +134,22 @@ public class LCSTestCase extends TestCase {
     assertEquals(3, it.getIndex2());
     assertFalse(it.hasNext());
   }
+
+  // See http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+  public void testWikipedia() {
+    List<Character> c1 = chars("UXWAJZM");
+    List<Character> c2 = chars("ZUAYJMX");
+    LCS<List<Character>, List<Character>, Character> lcs = new LCS<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>());
+    lcs.perform(c1, c2);
+    String s =
+    "[0,0,0,0,0,0,0,0]\n" +
+    "[0,0,1,1,1,1,1,1]\n" +
+    "[0,0,1,1,1,1,1,2]\n" +
+    "[0,0,1,2,2,2,2,2]\n" +
+    "[0,0,1,2,2,3,3,3]\n" +
+    "[0,0,1,2,2,3,3,3]\n" +
+    "[0,1,1,2,2,3,3,3]\n" +
+    "[0,1,1,2,2,3,4,4]\n";
+    assertEquals(s, lcs.toString());
+  }
 }

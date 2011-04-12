@@ -97,12 +97,13 @@ public class LCS<L1, L2, E> {
       for (int j = 1;j < n;j++) {
         int index = i + j * m;
         int v;
-         if (equals(abc, itJ.next())) {
+         E def = itJ.next();
+         if (equals(abc, def)) {
           v = matrix[index - m - 1] + 1;
         } else {
           int v1 = matrix[index - 1];
           int v2 = matrix[index - m];
-          v = v1 < v2 ? v1 : v2;
+          v = v1 < v2 ? v2 : v1;
         }
         matrix[index] = v;
       }
@@ -115,4 +116,20 @@ public class LCS<L1, L2, E> {
   protected boolean equals(E e1, E e2) {
     return e1.equals(e2);
   }
+
+   @Override
+   public String toString() {
+     StringBuilder sb = new StringBuilder();
+     for (int i = 0;i < m;i++) {
+       sb.append('[');
+       for (int j = 0;j < n;j++) {
+         if (j > 0) {
+           sb.append(',');
+         }
+         sb.append(matrix[i + j * m]);
+       }
+       sb.append("]\n");
+     }
+     return sb.toString();
+   }
 }
