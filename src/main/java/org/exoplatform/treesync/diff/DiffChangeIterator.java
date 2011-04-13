@@ -203,7 +203,7 @@ public class DiffChangeIterator<L1, N1, L2, N2, H> implements Iterator<DiffChang
                      N1 next1 = context1.findByHandle(frame.it1.next());
                      N2 next2 = context2.findByHandle(frame.it2.next());
                      frame = new Frame(frame, next1, next2);
-                     return hasNext();
+                     continue;
                   case ADD:
                      frame.it2.next();
                      H addedHandle = frame.it.getElement();
