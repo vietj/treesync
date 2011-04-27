@@ -174,14 +174,7 @@ public class DiffChangeIterator<L1, N1, L2, N2, H> implements Iterator<DiffChang
                else
                {
                   children1 = null;
-                  adapter1 = new ListAdapter<L1, H>() {
-                     public int size(L1 list) {
-                        return 0;
-                     }
-                     public Iterator<H> iterator(L1 list, boolean reverse) {
-                        return Collections.<H>emptyList().iterator();
-                     }
-                  };
+                  adapter1 = EmptyListAdapter.get();
                }
                L2 children2 = context2.getModel().getChildren(frame.dstRoot);
                frame.srcIt = adapter1.iterator(children1, false);
