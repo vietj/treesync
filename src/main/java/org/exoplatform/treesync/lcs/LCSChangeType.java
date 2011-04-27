@@ -25,10 +25,10 @@ package org.exoplatform.treesync.lcs;
  */
 public enum LCSChangeType {
 
-  REMOVE,
+   REMOVE,
 
-  KEEP,
+   KEEP,
 
-  ADD
+   ADD
 
 }

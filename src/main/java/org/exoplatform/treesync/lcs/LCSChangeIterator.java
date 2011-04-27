@@ -28,136 +28,136 @@ import java.util.NoSuchElementException;
  */
 public class LCSChangeIterator<L1, L2, E> implements Iterator<LCSChangeType> {
 
-  /** . */
-  private boolean buffered;
+   /** . */
+   private boolean buffered;
 
-  /** . */
-  private LCSChangeType type;
+   /** . */
+   private LCSChangeType type;
 
-  /** . */
-  private E element;
+   /** . */
+   private E element;
 
-  /** . */
-  private final LCS<L1, L2, E> lcs;
+   /** . */
+   private final LCS<L1, L2, E> lcs;
 
-  /** . */
-  private int size1;
+   /** . */
+   private int size1;
 
-  /** . */
-  private int size2;
+   /** . */
+   private int size2;
 
-  /** . */
-  private int i;
+   /** . */
+   private int i;
 
-  /** . */
-  private int j;
+   /** . */
+   private int j;
 
-  /** . */
-  private Iterator<E> it1;
+   /** . */
+   private Iterator<E> it1;
 
-  /** . */
-  private E next1;
+   /** . */
+   private E next1;
 
-  /** . */
-  private Iterator<E> it2;
+   /** . */
+   private Iterator<E> it2;
 
-  /** . */
-  private E next2;
+   /** . */
+   private E next2;
 
-  LCSChangeIterator(LCS<L1, L2, E> lcs, L1 elements1, L2 elements2, int size1, int size2) {
-    this.buffered = false;
-    this.lcs = lcs;
-    this.size1 = size1;
-    this.size2 = size2;
-    this.i = size1;
-    this.j = size2;
-    this.it1 = lcs.adapter1.iterator(elements1, false);
-    this.it2 = lcs.adapter2.iterator(elements2, false);
+   LCSChangeIterator(LCS<L1, L2, E> lcs, L1 elements1, L2 elements2, int size1, int size2) {
+      this.buffered = false;
+      this.lcs = lcs;
+      this.size1 = size1;
+      this.size2 = size2;
+      this.i = size1;
+      this.j = size2;
+      this.it1 = lcs.adapter1.iterator(elements1, false);
+      this.it2 = lcs.adapter2.iterator(elements2, false);
 
 
-    if (it1.hasNext()) {
-      next1 = it1.next();
-    }
-    if (it2.hasNext()) {
-      next2 = it2.next();
-    }
-  }
-
-  private void next1() {
-    i--;
-    if (it1.hasNext()) {
-      next1 = it1.next();
-    } else {
-      next1 = null;
-    }
-  }
-
-  private void next2() {
-    j--;
-    if (it2.hasNext()) {
-      next2 = it2.next();
-    } else {
-      next2 = null;
-    }
-  }
-
-  public LCSChangeType getType() {
-    return type;
-  }
-
-  public E getElement() {
-    return element;
-  }
-
-  public int getIndex1() {
-    return size1 - i;
-  }
-
-  public int getIndex2() {
-    return size2 - j;
-  }
-
-  public boolean hasNext() {
-    if (!buffered) {
-      E elt1 = null;
-      E elt2 = null;
-      if (i > 0 && j > 0 && lcs.equals(elt1 = next1, elt2 = next2)) {
-        type = LCSChangeType.KEEP;
-        element = elt1;
-        next1();
-        next2();
-        buffered = true;
-      } else {
-        int index1 = i + (j - 1) * lcs.m;
-        int index2 = i - 1 + j * lcs.m;
-        if (j > 0 && (i == 0  || lcs.matrix[index1] >= lcs.matrix[index2])) {
-          type = LCSChangeType.ADD;
-          element = elt2 == null ? next2 : elt2;
-          next2();
-          buffered = true;
-        } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
-          type = LCSChangeType.REMOVE;
-          element = elt1 == null ? next1 : elt1;
-          next1();
-          buffered = true;
-        } else {
-          // Done
-        }
+      if (it1.hasNext()) {
+         next1 = it1.next();
       }
-    }
-    return buffered;
-  }
+      if (it2.hasNext()) {
+         next2 = it2.next();
+      }
+   }
 
-  public LCSChangeType next() {
-    if (!hasNext()) {
-      throw new NoSuchElementException();
-    } else {
-      buffered = false;
+   private void next1() {
+      i--;
+      if (it1.hasNext()) {
+         next1 = it1.next();
+      } else {
+         next1 = null;
+      }
+   }
+
+   private void next2() {
+      j--;
+      if (it2.hasNext()) {
+         next2 = it2.next();
+      } else {
+         next2 = null;
+      }
+   }
+
+   public LCSChangeType getType() {
       return type;
-    }
-  }
+   }
 
-  public void remove() {
-    throw new UnsupportedOperationException();
-  }
+   public E getElement() {
+      return element;
+   }
+
+   public int getIndex1() {
+      return size1 - i;
+   }
+
+   public int getIndex2() {
+      return size2 - j;
+   }
+
+   public boolean hasNext() {
+      if (!buffered) {
+         E elt1 = null;
+         E elt2 = null;
+         if (i > 0 && j > 0 && lcs.equals(elt1 = next1, elt2 = next2)) {
+            type = LCSChangeType.KEEP;
+            element = elt1;
+            next1();
+            next2();
+            buffered = true;
+         } else {
+            int index1 = i + (j - 1) * lcs.m;
+            int index2 = i - 1 + j * lcs.m;
+            if (j > 0 && (i == 0 || lcs.matrix[index1] >= lcs.matrix[index2])) {
+               type = LCSChangeType.ADD;
+               element = elt2 == null ? next2 : elt2;
+               next2();
+               buffered = true;
+            } else if (i > 0 && (j == 0 || lcs.matrix[index1] < lcs.matrix[index2])) {
+               type = LCSChangeType.REMOVE;
+               element = elt1 == null ? next1 : elt1;
+               next1();
+               buffered = true;
+            } else {
+               // Done
+            }
+         }
+      }
+      return buffered;
+   }
+
+   public LCSChangeType next() {
+      if (!hasNext()) {
+         throw new NoSuchElementException();
+      } else {
+         buffered = false;
+         return type;
+      }
+   }
+
+   public void remove() {
+      throw new UnsupportedOperationException();
+   }
 }
