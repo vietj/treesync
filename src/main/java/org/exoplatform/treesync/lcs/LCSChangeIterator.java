@@ -71,8 +71,8 @@ public class LCSChangeIterator<L1, L2, E> implements Iterator<LCSChangeType> {
       this.size2 = size2;
       this.i = size1;
       this.j = size2;
-      this.it1 = lcs.adapter1.iterator(elements1, false);
-      this.it2 = lcs.adapter2.iterator(elements2, false);
+      this.it1 = lcs.adapter1.iterator(elements1, 0, false);
+      this.it2 = lcs.adapter2.iterator(elements2, 0, false);
 
 
       if (it1.hasNext()) {

@@ -90,10 +90,10 @@ public class LCS<L1, L2, E> {
             matrix[j * m] = 0;
          }
       }
-      Iterator<E> itI = adapter1.iterator(elements1, true);
+      Iterator<E> itI = adapter1.iterator(elements1, size1, true);
       for (int i = 1; i < m; i++) {
          E abc = itI.next();
-         Iterator<E> itJ = adapter2.iterator(elements2, true);
+         Iterator<E> itJ = adapter2.iterator(elements2, size2, true);
          for (int j = 1; j < n; j++) {
             int index = i + j * m;
             int v;

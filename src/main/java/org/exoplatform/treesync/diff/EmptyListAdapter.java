@@ -42,7 +42,7 @@ class EmptyListAdapter<L, H> implements ListAdapter<L, H> {
       return 0;
    }
 
-   public Iterator<H> iterator(L list, boolean reverse) {
+   public Iterator<H> iterator(L list, int offset, boolean reverse) {
       return Collections.<H>emptyList().iterator();
    }
 }
