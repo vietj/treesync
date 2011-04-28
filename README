@@ -6,4 +6,41 @@ A framework that performs a diff on objects, two implementations are done:
 Comparison is based on the Longest Common Subsequence (LCS) algorithm as explained here
 http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
+Exemple usage for a list:
+
+// The source list
+String[] source = new String[]{"banana","strawberry","cherry"};
+
+// The destination list
+List<String> destination = Arrays.asList("apple", "banana", "raspberry","cherry");
+
+// Let's create the differ
+ListDiff<String[], List<String>, String> diff = new ListDiff<String[], List<String>, String>(new ArrayAdapter<String>(), new JavaUtilListAdapter<String>());
+
+// Get a change iterator
+ListChangeIterator<String[], List<String>, String> it = diff.iterator(source, destination);
+
+// +apple
+Assert.assertEquals(ListChangeType.ADD, it.next());
+assertEquals("apple", it.getElement());
+
+// banana
+assertEquals(ListChangeType.SAME, it.next());
+assertEquals("banana", it.getElement());
+
+// +raspberry
+assertEquals(ListChangeType.ADD, it.next());
+assertEquals("raspberry", it.getElement());
+
+// -strawberry
+assertEquals(ListChangeType.REMOVE, it.next());
+assertEquals("strawberry", it.getElement());
+
+// cherry
+assertEquals(ListChangeType.SAME, it.next());
+assertEquals("cherry", it.getElement());
+
+// Done
+assertFalse(it.hasNext());
+
 Feel free to reuse it if you find it useful
