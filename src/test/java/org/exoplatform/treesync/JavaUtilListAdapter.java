@@ -32,9 +32,9 @@ public class JavaUtilListAdapter<E> implements ListAdapter<List<E>, E> {
       return list.size();
    }
 
-   public Iterator<E> iterator(List<E> list, int offset, boolean reverse) {
+   public Iterator<E> iterator(List<E> list, boolean reverse) {
       if (reverse) {
-         final ListIterator<E> it = list.listIterator(offset);
+         final ListIterator<E> it = list.listIterator(list.size());
          return new Iterator<E>() {
             public boolean hasNext() {
                return it.hasPrevious();
@@ -47,7 +47,7 @@ public class JavaUtilListAdapter<E> implements ListAdapter<List<E>, E> {
             }
          };
       } else {
-         return list.listIterator(offset);
+         return list.iterator();
       }
    }
 }

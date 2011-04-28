@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.lcs;
+package org.exoplatform.treesync.seq;
 
 import org.exoplatform.treesync.ListAdapter;
 
@@ -26,30 +26,20 @@ import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
  */
-public class LCS<L1, L2, E> {
-
-   public static <L1, L2, E extends Comparable<E>> LCS<L1, L2, E> create(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
-      return new LCS<L1, L2, E>(adapter1, adapter2) {
-         @Override
-         protected boolean equals(E e1, E e2) {
-            return e1.compareTo(e2) == 0;
-         }
-      };
-   }
-
-   public static <L1, L2, E> LCS<L1, L2, E> create(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2, final Comparator<E> comparator) {
-      return new LCS<L1, L2, E>(adapter1, adapter2) {
-         @Override
-         protected boolean equals(E e1, E e2) {
-            return comparator.compare(e1, e2) == 0;
-         }
-      };
-   }
+public class Seq<L1, L2, E> {
 
    /** . */
    private static final int[] EMPTY = new int[0];
+
+   /** . */
+   final Comparator<E> comparator;
+
+   /** . */
+   final ListAdapter<L1, E> adapter1;
+
+   /** . */
+   final ListAdapter<L2, E> adapter2;
 
    /** . */
    int[] matrix;
@@ -60,25 +50,39 @@ public class LCS<L1, L2, E> {
    /** . */
    int n;
 
-   /** . */
-   final ListAdapter<L1, E> adapter1;
-
-   /** . */
-   final ListAdapter<L2, E> adapter2;
-
-   public LCS(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
-      this.matrix = EMPTY;
-      this.m = -1;
-      this.n = -1;
+   public Seq(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2, Comparator<E> comparator) {
       this.adapter1 = adapter1;
       this.adapter2 = adapter2;
+      this.comparator = comparator;
+      this.matrix = EMPTY;
    }
 
-   public final LCSChangeIterator<L1, L2, E> perform(L1 elements1, L2 elements2) {
-      int size1 = adapter1.size(elements1);
-      int size2 = adapter2.size(elements2);
-      m = 1 + size1;
-      n = 1 + size2;
+   public Seq(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
+      this(adapter1, adapter2, null);
+   }
+
+   boolean equals(E e1, E e2) {
+      if (comparator == null) {
+         return e1.equals(e2);
+      } else {
+         return comparator.compare(e1, e2) == 0;
+      }
+   }
+
+   /**
+    * Compute the LCS matrix from the specified offset. It updates the state of this object
+    * with the relevant state. The LCS matrix is computed using the LCS algorithm
+    * (see http://en.wikipedia.org/wiki/Longest_common_subsequence_problem).
+    *
+    * @param offset the offset
+    * @param elements1 the elements 1
+    * @param elements2 the elements 2
+    */
+   void lcs(int offset, L1 elements1, L2 elements2) {
+      m = 1 + adapter1.size(elements1) - offset;
+      n = 1 + adapter2.size(elements2) - offset;
+
+      // Clean / adapt matrix
       int s = m * n;
       if (matrix.length < s) {
          matrix = new int[s];
@@ -90,6 +94,8 @@ public class LCS<L1, L2, E> {
             matrix[j * m] = 0;
          }
       }
+
+      // Compute the lcs matrix
       Iterator<E> itI = adapter1.iterator(elements1, true);
       for (int i = 1; i < m; i++) {
          E abc = itI.next();
@@ -108,13 +114,10 @@ public class LCS<L1, L2, E> {
             matrix[index] = v;
          }
       }
-
-      //
-      return new LCSChangeIterator<L1, L2, E>(this, elements1, elements2, size1, size2);
    }
 
-   protected boolean equals(E e1, E e2) {
-      return e1.equals(e2);
+   public final SeqChangeIterator<L1, L2, E> iterator(L1 elements1, L2 elements2) {
+      return new SeqChangeIterator<L1, L2, E>(this, elements1, elements2);
    }
 
    @Override

@@ -39,11 +39,11 @@ public interface ListAdapter<L, E> {
    /**
     * Returns an iterator over the list elements.
     *
+    *
     * @param list the list
-    * @param offset the index of first element
     * @param reverse the iteration direction
     * @return the iterator
     */
-   Iterator<E> iterator(L list, int offset, boolean reverse);
+   Iterator<E> iterator(L list, boolean reverse);
 
 }

@@ -177,8 +177,8 @@ public class DiffChangeIterator<L1, N1, L2, N2, H> implements Iterator<DiffChang
                   adapter1 = EmptyListAdapter.get();
                }
                L2 children2 = context2.getModel().getChildren(frame.dstRoot);
-               frame.srcIt = adapter1.iterator(children1, 0, false);
-               frame.dstIt = diff.adapter2.iterator(children2, 0, false);
+               frame.srcIt = adapter1.iterator(children1, false);
+               frame.dstIt = diff.adapter2.iterator(children2, false);
                frame.it = LCS.create(
                      adapter1,
                      diff.adapter2,

@@ -17,32 +17,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.diff;
-
-import org.exoplatform.treesync.ListAdapter;
-
-import java.util.Collections;
-import java.util.Iterator;
+package org.exoplatform.treesync.seq;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
+ * @version $Revision$
  */
-class EmptyListAdapter<L, H> implements ListAdapter<L, H> {
+public enum SeqChangeType {
 
-   /** . */
-   private static final EmptyListAdapter instance = new EmptyListAdapter();
+   REMOVE,
 
-   static <L, H> EmptyListAdapter<L, H> get() {
-      @SuppressWarnings("unchecked")
-      EmptyListAdapter<L, H> adapter = instance;
-      return adapter;
-   }
+   SAME,
 
-   public int size(L list) {
-      return 0;
-   }
+   ADD
 
-   public Iterator<H> iterator(L list, boolean reverse) {
-      return Collections.<H>emptyList().iterator();
-   }
 }
