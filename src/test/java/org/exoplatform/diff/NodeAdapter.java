@@ -27,20 +27,20 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleAdapter implements HierarchyAdapter<List<String>, SimpleNode, String> {
+public class NodeAdapter implements HierarchyAdapter<List<String>, Node, String> {
 
    /** . */
-   public static final HierarchyAdapter<List<String>, SimpleNode, String> INSTANCE = new SimpleAdapter();
+   public static final HierarchyAdapter<List<String>, Node, String> INSTANCE = new NodeAdapter();
 
-   public String getHandle(SimpleNode node) {
+   public String getHandle(Node node) {
       return node.getId();
    }
 
-   public List<String> getChildren(SimpleNode node) {
+   public List<String> getChildren(Node node) {
       return node.getChildrenIds();
    }
 
-   public SimpleNode getDescendant(SimpleNode node, String handle) {
+   public Node getDescendant(Node node, String handle) {
       return node.getDescendant(handle);
    }
 }

@@ -21,8 +21,8 @@ package org.exoplatform.diff.hierarchy;
 
 import junit.framework.TestCase;
 import org.exoplatform.diff.JavaUtilListAdapter;
-import org.exoplatform.diff.SimpleAdapter;
-import org.exoplatform.diff.SimpleNode;
+import org.exoplatform.diff.Node;
+import org.exoplatform.diff.NodeAdapter;
 
 import java.util.Comparator;
 import java.util.List;
@@ -34,11 +34,11 @@ import java.util.List;
 public class HierarchyDiffTestCase extends TestCase {
 
    /** . */
-   private final HierarchyDiff<List<String>, SimpleNode, List<String>, SimpleNode, String> diff = new HierarchyDiff<List<String>, SimpleNode, List<String>, SimpleNode, String>(
+   private final HierarchyDiff<List<String>, Node, List<String>, Node, String> diff = new HierarchyDiff<List<String>, Node, List<String>, Node, String>(
          new JavaUtilListAdapter<String>(),
-         SimpleAdapter.INSTANCE,
+         NodeAdapter.INSTANCE,
          new JavaUtilListAdapter<String>(),
-         SimpleAdapter.INSTANCE,
+         NodeAdapter.INSTANCE,
          new Comparator<String>() {
             public int compare(String s1, String s2) {
                return s1.compareTo(s2);
@@ -46,9 +46,9 @@ public class HierarchyDiffTestCase extends TestCase {
          });
 
    public void testSyncException() {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode node2 = new SimpleNode();
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      Node node1 = new Node();
+      Node node2 = new Node();
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ERROR, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -56,9 +56,9 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testEmpty() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode node2 = node1.clone();
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      Node node1 = new Node();
+      Node node2 = node1.clone();
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -69,11 +69,11 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testFoo() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode child1 = node1.addChild();
-      SimpleNode node2 = node1.clone();
-      SimpleNode child2 = node2.getChild(child1.getId());
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      Node node1 = new Node();
+      Node child1 = node1.addChild();
+      Node node2 = node1.clone();
+      Node child2 = node2.getChild(child1.getId());
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -90,11 +90,11 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testRemove() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode child1 = node1.addChild();
-      SimpleNode node2 = node1.clone();
+      Node node1 = new Node();
+      Node child1 = node1.addChild();
+      Node node2 = node1.clone();
       node2.getChild(child1.getId()).destroy();
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -108,10 +108,10 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testAdd() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode node2 = node1.clone();
-      SimpleNode child2 = node2.addChild();
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      Node node1 = new Node();
+      Node node2 = node1.clone();
+      Node child2 = node2.addChild();
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -131,11 +131,11 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testRecurseAdd() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode node2 = node1.clone();
-      SimpleNode child2 = node2.addChild();
-      SimpleNode child3 = child2.addChild();
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      Node node1 = new Node();
+      Node node2 = node1.clone();
+      Node child2 = node2.addChild();
+      Node child3 = child2.addChild();
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -164,16 +164,16 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testMove() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode a1 = node1.addChild();
-      SimpleNode b1 = node1.addChild();
-      SimpleNode c1 = a1.addChild();
-      SimpleNode node2 = node1.clone();
-      SimpleNode a2 = node2.getChild(a1.getId());
-      SimpleNode b2 = node2.getChild(b1.getId());
-      SimpleNode c2 = a2.getChild(c1.getId());
+      Node node1 = new Node();
+      Node a1 = node1.addChild();
+      Node b1 = node1.addChild();
+      Node c1 = a1.addChild();
+      Node node2 = node1.clone();
+      Node a2 = node2.getChild(a1.getId());
+      Node b2 = node2.getChild(b1.getId());
+      Node c2 = a2.getChild(c1.getId());
       b2.addChild(c2);
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -208,19 +208,19 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testRecurseOnMove() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode a1 = node1.addChild();
-      SimpleNode b1 = node1.addChild();
-      SimpleNode c1 = a1.addChild();
-      SimpleNode d1 = c1.addChild();
-      SimpleNode node2 = node1.clone();
-      SimpleNode a2 = node2.getChild(a1.getId());
-      SimpleNode b2 = node2.getChild(b1.getId());
-      SimpleNode c2 = a2.getChild(c1.getId());
-      SimpleNode d2 = c2.getChild(d1.getId());
+      Node node1 = new Node();
+      Node a1 = node1.addChild();
+      Node b1 = node1.addChild();
+      Node c1 = a1.addChild();
+      Node d1 = c1.addChild();
+      Node node2 = node1.clone();
+      Node a2 = node2.getChild(a1.getId());
+      Node b2 = node2.getChild(b1.getId());
+      Node c2 = a2.getChild(c1.getId());
+      Node d2 = c2.getChild(d1.getId());
       b2.addChild(c2);
       node2.addChild(d2);
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -267,21 +267,21 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testRemovedMovedIn() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode a1 = node1.addChild();
-      SimpleNode b1 = a1.addChild();
-      SimpleNode c1 = node1.addChild();
-      SimpleNode node2 = node1.clone();
-      SimpleNode a2 = node2.getChild(a1.getId());
-      SimpleNode b2 = a2.getChild(b1.getId());
-      SimpleNode c2 = node2.getChild(c1.getId());
+      Node node1 = new Node();
+      Node a1 = node1.addChild();
+      Node b1 = a1.addChild();
+      Node c1 = node1.addChild();
+      Node node2 = node1.clone();
+      Node a2 = node2.getChild(a1.getId());
+      Node b2 = a2.getChild(b1.getId());
+      Node c2 = node2.getChild(c1.getId());
 
       //
       c2.addChild(b2);
       a2.destroy();
 
       //
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
@@ -310,17 +310,17 @@ public class HierarchyDiffTestCase extends TestCase {
    }
 
    public void testMovedToAddedParent() throws Exception {
-      SimpleNode node1 = new SimpleNode();
-      SimpleNode a1 = node1.addChild();
-      SimpleNode b1 = a1.addChild();
-      SimpleNode node2 = node1.clone();
-      SimpleNode a2 = node2.getChild(a1.getId());
-      SimpleNode b2 = a2.getChild(b1.getId());
-      SimpleNode c2 = node2.addChild();
+      Node node1 = new Node();
+      Node a1 = node1.addChild();
+      Node b1 = a1.addChild();
+      Node node2 = node1.clone();
+      Node a2 = node2.getChild(a1.getId());
+      Node b2 = a2.getChild(b1.getId());
+      Node c2 = node2.addChild();
       c2.addChild(b2);
 
       //
-      HierarchyChangeIterator<List<String>, SimpleNode, List<String>, SimpleNode, String> it = diff.iterator(node1, node2);
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it = diff.iterator(node1, node2);
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
