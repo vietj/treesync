@@ -1,1 +1,9 @@
-experiments about tree synchronization / diff
+A framework that performs a diff on objects, two implementations are done:
+
+- stream : compare two streams of objects
+- hierarchy : compare two hierarchies of objects
+
+Comparison is based on the Longest Common Subsequence (LCS) algorithm as explained here
+http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+
+Feel free to reuse it if you find it useful
