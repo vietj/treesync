@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,49 +17,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync;
+package org.exoplatform.diff;
+
+import org.exoplatform.diff.hierarchy.HierarchyModel;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SyncContext<L, N, H> {
+public class SimpleModel implements HierarchyModel<List<String>, SimpleNode, String> {
 
    /** . */
-   final ListAdapter<L, H> adapter;
+   public static final HierarchyModel<List<String>, SimpleNode, String> INSTANCE = new SimpleModel();
 
-   /** . */
-   final SyncModel<L, N, H> model;
-
-   /** . */
-   final N root;
-
-   public SyncContext(ListAdapter<L, H> adapter, SyncModel<L, N, H> model, N root) throws NullPointerException {
-      if (adapter == null) {
-         throw new NullPointerException();
-      }
-      if (model == null) {
-         throw new NullPointerException();
-      }
-      if (root == null) {
-         throw new NullPointerException();
-      }
-
-      //
-      this.adapter = adapter;
-      this.model = model;
-      this.root = root;
+   public String getHandle(SimpleNode node) {
+      return node.getId();
    }
 
-   public SyncModel<L, N, H> getModel() {
-      return model;
+   public List<String> getChildren(SimpleNode node) {
+      return node.getChildrenIds();
    }
 
-   public N getRoot() {
-      return root;
-   }
-
-   public N findByHandle(H handle) {
-      return model.getDescendant(root, handle);
+   public SimpleNode getDescendant(SimpleNode node, String handle) {
+      return node.getDescendant(handle);
    }
 }

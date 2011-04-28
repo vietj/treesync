@@ -17,9 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.seq;
+package org.exoplatform.diff.stream;
 
-import org.exoplatform.treesync.ListAdapter;
+import org.exoplatform.diff.ListAdapter;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -27,7 +27,7 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
-public class Seq<L1, L2, E> {
+public class StreamDiff<L1, L2, E> {
 
    /** . */
    private static final int[] EMPTY = new int[0];
@@ -50,14 +50,14 @@ public class Seq<L1, L2, E> {
    /** . */
    int n;
 
-   public Seq(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2, Comparator<E> comparator) {
+   public StreamDiff(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2, Comparator<E> comparator) {
       this.adapter1 = adapter1;
       this.adapter2 = adapter2;
       this.comparator = comparator;
       this.matrix = EMPTY;
    }
 
-   public Seq(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
+   public StreamDiff(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
       this(adapter1, adapter2, null);
    }
 
@@ -116,8 +116,8 @@ public class Seq<L1, L2, E> {
       }
    }
 
-   public final SeqChangeIterator<L1, L2, E> iterator(L1 elements1, L2 elements2) {
-      return new SeqChangeIterator<L1, L2, E>(this, elements1, elements2);
+   public final StreamChangeIterator<L1, L2, E> iterator(L1 elements1, L2 elements2) {
+      return new StreamChangeIterator<L1, L2, E>(this, elements1, elements2);
    }
 
    @Override

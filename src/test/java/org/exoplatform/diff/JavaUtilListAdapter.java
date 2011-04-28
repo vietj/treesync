@@ -17,28 +17,37 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync;
+package org.exoplatform.diff;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
  */
-public class SimpleModel implements SyncModel<List<String>, SimpleNode, String> {
+public class JavaUtilListAdapter<E> implements ListAdapter<List<E>, E> {
 
-   /** . */
-   public static final SyncModel<List<String>, SimpleNode, String> INSTANCE = new SimpleModel();
-
-   public String getHandle(SimpleNode node) {
-      return node.getId();
+   public int size(List<E> list) {
+      return list.size();
    }
 
-   public List<String> getChildren(SimpleNode node) {
-      return node.getChildrenIds();
-   }
-
-   public SimpleNode getDescendant(SimpleNode node, String handle) {
-      return node.getDescendant(handle);
+   public Iterator<E> iterator(List<E> list, boolean reverse) {
+      if (reverse) {
+         final ListIterator<E> it = list.listIterator(list.size());
+         return new Iterator<E>() {
+            public boolean hasNext() {
+               return it.hasPrevious();
+            }
+            public E next() {
+               return it.previous();
+            }
+            public void remove() {
+               throw new UnsupportedOperationException();
+            }
+         };
+      } else {
+         return list.iterator();
+      }
    }
 }

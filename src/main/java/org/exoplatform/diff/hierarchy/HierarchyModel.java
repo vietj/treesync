@@ -17,13 +17,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync;
+package org.exoplatform.diff.hierarchy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface SyncModel<L, N, H> {
+public interface HierarchyModel<L, N, H> {
 
    H getHandle(N node);
 

@@ -17,19 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.seq;
+package org.exoplatform.diff.stream;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Iterates over a stream of {@link SeqChangeType} computed from two stream of  objects. The implementation
+ * Iterates over a stream of {@link StreamChangeType} computed from two stream of  objects. The implementation
  * is optimized to use the LCS algorithm only when needed, for trivial streams no LCS computation should be
  * required.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
-public class SeqChangeIterator<L1, L2, E> implements Iterator<SeqChangeType> {
+public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeType> {
 
    /** . */
    private static final int TRIVIAL_MODE = 0;
@@ -38,7 +38,7 @@ public class SeqChangeIterator<L1, L2, E> implements Iterator<SeqChangeType> {
    private static final int LCS_MODE = 1;
 
    /** . */
-   Seq<L1, L2, E> seq;
+   StreamDiff<L1, L2, E> diff;
 
    /** . */
    private final L1 elements1;
@@ -68,7 +68,7 @@ public class SeqChangeIterator<L1, L2, E> implements Iterator<SeqChangeType> {
    private E element;
 
    /** . */
-   private SeqChangeType type;
+   private StreamChangeType type;
 
    /** . */
    private int mode;
@@ -76,12 +76,12 @@ public class SeqChangeIterator<L1, L2, E> implements Iterator<SeqChangeType> {
    /** . */
    private boolean buffered;
 
-   public SeqChangeIterator(Seq<L1, L2, E> seq, L1 elements1, L2 elements2) {
-      this.seq = seq;
+   StreamChangeIterator(StreamDiff<L1, L2, E> diff, L1 elements1, L2 elements2) {
+      this.diff = diff;
       this.elements1 = elements1;
       this.elements2 = elements2;
-      this.it1 = seq.adapter1.iterator(elements1, false);
-      this.it2 = seq.adapter2.iterator(elements2, false);
+      this.it1 = diff.adapter1.iterator(elements1, false);
+      this.it2 = diff.adapter2.iterator(elements2, false);
       this.mode = TRIVIAL_MODE;
 
       //
@@ -126,25 +126,25 @@ public class SeqChangeIterator<L1, L2, E> implements Iterator<SeqChangeType> {
          if (mode == TRIVIAL_MODE) {
             if (next1 != null) {
                if (next2 != null) {
-                  if (seq.equals(next1, next2)) {
-                     type = SeqChangeType.SAME;
+                  if (diff.equals(next1, next2)) {
+                     type = StreamChangeType.SAME;
                      element = next1;
                      buffered = true;
                      next1();
                      next2();
                   } else {
-                     seq.lcs(index1, elements1, elements2);
+                     diff.lcs(index1, elements1, elements2);
                      mode = LCS_MODE;
                   }
                } else {
-                  type = SeqChangeType.REMOVE;
+                  type = StreamChangeType.REMOVE;
                   element = next1;
                   buffered = true;
                   next1();
                }
             } else {
                if (next2 != null) {
-                  type = SeqChangeType.ADD;
+                  type = StreamChangeType.ADD;
                   element = next2;
                   buffered = true;
                   next2();
@@ -156,24 +156,24 @@ public class SeqChangeIterator<L1, L2, E> implements Iterator<SeqChangeType> {
          } else if (mode == LCS_MODE) {
             E elt1 = null;
             E elt2 = null;
-            int i = seq.adapter1.size(elements1) - index1;
-            int j = seq.adapter2.size(elements2) - index2;
-            if (i > 0 && j > 0 && seq.equals(elt1 = next1, elt2 = next2)) {
-               type = SeqChangeType.SAME;
+            int i = diff.adapter1.size(elements1) - index1;
+            int j = diff.adapter2.size(elements2) - index2;
+            if (i > 0 && j > 0 && diff.equals(elt1 = next1, elt2 = next2)) {
+               type = StreamChangeType.SAME;
                element = elt1;
                next1();
                next2();
                buffered = true;
             } else {
-               int index1 = i + (j - 1) * seq.m;
-               int index2 = i - 1 + j * seq.m;
-               if (j > 0 && (i == 0 || seq.matrix[index1] >= seq.matrix[index2])) {
-                  type = SeqChangeType.ADD;
+               int index1 = i + (j - 1) * diff.m;
+               int index2 = i - 1 + j * diff.m;
+               if (j > 0 && (i == 0 || diff.matrix[index1] >= diff.matrix[index2])) {
+                  type = StreamChangeType.ADD;
                   element = elt2 == null ? next2 : elt2;
                   next2();
                   buffered = true;
-               } else if (i > 0 && (j == 0 || seq.matrix[index1] < seq.matrix[index2])) {
-                  type = SeqChangeType.REMOVE;
+               } else if (i > 0 && (j == 0 || diff.matrix[index1] < diff.matrix[index2])) {
+                  type = StreamChangeType.REMOVE;
                   element = elt1 == null ? next1 : elt1;
                   next1();
                   buffered = true;
@@ -191,7 +191,7 @@ public class SeqChangeIterator<L1, L2, E> implements Iterator<SeqChangeType> {
       return buffered;
    }
 
-   public SeqChangeType next() {
+   public StreamChangeType next() {
       if (!hasNext()) {
          throw new NoSuchElementException();
       } else {

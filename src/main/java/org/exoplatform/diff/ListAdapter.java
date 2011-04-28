@@ -17,37 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync;
+package org.exoplatform.diff;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
+ * An adapter for a list of elements.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
-public class JavaUtilListAdapter<E> implements ListAdapter<List<E>, E> {
+public interface ListAdapter<L, E> {
 
-   public int size(List<E> list) {
-      return list.size();
-   }
+   /**
+    * Returns the number of list elements.
+    *
+    * @param list the list
+    * @return the list size
+    */
+   int size(L list);
 
-   public Iterator<E> iterator(List<E> list, boolean reverse) {
-      if (reverse) {
-         final ListIterator<E> it = list.listIterator(list.size());
-         return new Iterator<E>() {
-            public boolean hasNext() {
-               return it.hasPrevious();
-            }
-            public E next() {
-               return it.previous();
-            }
-            public void remove() {
-               throw new UnsupportedOperationException();
-            }
-         };
-      } else {
-         return list.iterator();
-      }
-   }
+   /**
+    * Returns an iterator over the list elements.
+    *
+    *
+    * @param list the list
+    * @param reverse the iteration direction
+    * @return the iterator
+    */
+   Iterator<E> iterator(L list, boolean reverse);
+
 }

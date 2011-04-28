@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,10 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.lcs;
+package org.exoplatform.diff.stream;
 
 import junit.framework.TestCase;
-import org.exoplatform.treesync.JavaUtilListAdapter;
+import org.exoplatform.diff.JavaUtilListAdapter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class LCSTestCase extends TestCase {
+public class StreamDiffTestCase extends TestCase {
 
    private static List<Character> chars(String s) {
       Character[] chars = new Character[s.length()];
@@ -39,108 +39,125 @@ public class LCSTestCase extends TestCase {
       return Arrays.asList(chars);
    }
 
-   private LCSChangeIterator<List<Character>, List<Character>, Character> diff(String s1, String s2) {
+   private StreamChangeIterator<List<Character>, List<Character>, Character> diff(String s1, String s2) {
       List<Character> c1 = chars(s1);
       List<Character> c2 = chars(s2);
-      return new LCS<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>()).perform(c1, c2);
+      return new StreamDiff<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>()).iterator(c1, c2);
+   }
+
+   public void test0() {
+      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("", "");
+      assertEquals(0, it.getIndex1());
+      assertEquals(0, it.getIndex2());
+      assertFalse(it.hasNext());
+      assertEquals(0, it.diff.matrix.length);
    }
 
    public void test1() {
-      LCSChangeIterator<List<Character>, List<Character>, Character> it = diff("", "a");
+      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("", "a");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(LCSChangeType.ADD, it.next());
+      assertEquals(StreamChangeType.ADD, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
       assertFalse(it.hasNext());
+      assertEquals(0, it.diff.matrix.length);
    }
 
    public void test2() {
-      LCSChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "");
+      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(LCSChangeType.REMOVE, it.next());
+      assertEquals(StreamChangeType.REMOVE, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(0, it.getIndex2());
       assertFalse(it.hasNext());
+      assertEquals(0, it.diff.matrix.length);
    }
 
    public void test3() {
-      LCSChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "a");
+      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "a");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(LCSChangeType.KEEP, it.next());
+      assertEquals(StreamChangeType.SAME, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
       assertFalse(it.hasNext());
+      assertEquals(0, it.diff.matrix.length);
    }
 
    public void test4() {
-      LCSChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "b");
+      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "b");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(LCSChangeType.ADD, it.next());
+      assertEquals(StreamChangeType.ADD, it.next());
       assertEquals('b', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(LCSChangeType.REMOVE, it.next());
+      assertEquals(StreamChangeType.REMOVE, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
       assertFalse(it.hasNext());
+      assertTrue(it.diff.matrix.length > 0);
    }
 
    public void test5() {
-      LCSChangeIterator<List<Character>, List<Character>, Character> it = diff("", "ab");
+      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("", "ab");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(LCSChangeType.ADD, it.next());
+      assertEquals(StreamChangeType.ADD, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(LCSChangeType.ADD, it.next());
+      assertEquals(StreamChangeType.ADD, it.next());
       assertEquals('b', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(2, it.getIndex2());
       assertFalse(it.hasNext());
+      assertEquals(0, it.diff.matrix.length);
    }
 
    public void test6() {
-      LCSChangeIterator<List<Character>, List<Character>, Character> it = diff("abc", "dbe");
+      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("abc", "dbe");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(LCSChangeType.ADD, it.next());
+      assertEquals(StreamChangeType.ADD, it.next());
       assertEquals('d', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(LCSChangeType.REMOVE, it.next());
+      assertEquals(StreamChangeType.REMOVE, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(LCSChangeType.KEEP, it.next());
+      assertEquals(StreamChangeType.SAME, it.next());
       assertEquals('b', (char) it.getElement());
       assertEquals(2, it.getIndex1());
       assertEquals(2, it.getIndex2());
-      assertEquals(LCSChangeType.ADD, it.next());
+      assertEquals(StreamChangeType.ADD, it.next());
       assertEquals(2, it.getIndex1());
       assertEquals(3, it.getIndex2());
       assertEquals('e', (char) it.getElement());
-      assertEquals(LCSChangeType.REMOVE, it.next());
+      assertEquals(StreamChangeType.REMOVE, it.next());
       assertEquals('c', (char) it.getElement());
       assertEquals(3, it.getIndex1());
       assertEquals(3, it.getIndex2());
       assertFalse(it.hasNext());
+      assertTrue(it.diff.matrix.length > 0);
    }
 
    // See http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
    public void testWikipedia() {
       List<Character> c1 = chars("UXWAJZM");
       List<Character> c2 = chars("ZUAYJMX");
-      LCS<List<Character>, List<Character>, Character> lcs = new LCS<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>());
-      lcs.perform(c1, c2);
+      StreamDiff<List<Character>, List<Character>, Character> seq = new StreamDiff<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>());
+      StreamChangeIterator i = seq.iterator(c1, c2);
+
+      // Force a load because it's lazy
+      i.hasNext();
       String s =
             "[0,0,0,0,0,0,0,0]\n" +
             "[0,0,1,1,1,1,1,1]\n" +
@@ -150,6 +167,8 @@ public class LCSTestCase extends TestCase {
             "[0,0,1,2,2,3,3,3]\n" +
             "[0,1,1,2,2,3,3,3]\n" +
             "[0,1,1,2,2,3,4,4]\n";
-      assertEquals(s, lcs.toString());
+
+      //
+      assertEquals(s, seq.toString());
    }
 }

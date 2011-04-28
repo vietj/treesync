@@ -17,32 +17,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.diff;
-
-import org.exoplatform.treesync.ListAdapter;
-
-import java.util.Collections;
-import java.util.Iterator;
+package org.exoplatform.diff.hierarchy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
-class EmptyListAdapter<L, H> implements ListAdapter<L, H> {
+public enum HierarchyChangeType {
 
-   /** . */
-   private static final EmptyListAdapter instance = new EmptyListAdapter();
+   ENTER,
 
-   static <L, H> EmptyListAdapter<L, H> get() {
-      @SuppressWarnings("unchecked")
-      EmptyListAdapter<L, H> adapter = instance;
-      return adapter;
-   }
+   ADDED,
 
-   public int size(L list) {
-      return 0;
-   }
+   REMOVED,
 
-   public Iterator<H> iterator(L list, boolean reverse) {
-      return Collections.<H>emptyList().iterator();
-   }
+   MOVED_IN,
+
+   MOVED_OUT,
+
+   LEAVE,
+
+   ERROR
+
 }

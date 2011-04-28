@@ -17,18 +17,51 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.treesync.lcs;
+package org.exoplatform.diff.hierarchy;
+
+import org.exoplatform.diff.ListAdapter;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum LCSChangeType {
+public class HierarchyContext<L, N, H> {
 
-   REMOVE,
+   /** . */
+   final ListAdapter<L, H> adapter;
 
-   KEEP,
+   /** . */
+   final HierarchyModel<L, N, H> model;
 
-   ADD
+   /** . */
+   final N root;
 
+   public HierarchyContext(ListAdapter<L, H> adapter, HierarchyModel<L, N, H> model, N root) throws NullPointerException {
+      if (adapter == null) {
+         throw new NullPointerException();
+      }
+      if (model == null) {
+         throw new NullPointerException();
+      }
+      if (root == null) {
+         throw new NullPointerException();
+      }
+
+      //
+      this.adapter = adapter;
+      this.model = model;
+      this.root = root;
+   }
+
+   public HierarchyModel<L, N, H> getModel() {
+      return model;
+   }
+
+   public N getRoot() {
+      return root;
+   }
+
+   public N findByHandle(H handle) {
+      return model.getDescendant(root, handle);
+   }
 }
