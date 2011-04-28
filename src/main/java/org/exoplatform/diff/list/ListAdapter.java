@@ -17,30 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.diff;
+package org.exoplatform.diff.list;
 
-import org.exoplatform.diff.hierarchy.HierarchyModel;
-
-import java.util.List;
+import java.util.Iterator;
 
 /**
+ * An adapter for a list of elements.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
  */
-public class SimpleModel implements HierarchyModel<List<String>, SimpleNode, String> {
+public interface ListAdapter<L, E> {
 
-   /** . */
-   public static final HierarchyModel<List<String>, SimpleNode, String> INSTANCE = new SimpleModel();
+   /**
+    * Returns the number of list elements.
+    *
+    * @param list the list
+    * @return the list size
+    */
+   int size(L list);
 
-   public String getHandle(SimpleNode node) {
-      return node.getId();
-   }
+   /**
+    * Returns an iterator over the list elements.
+    *
+    *
+    * @param list the list
+    * @param reverse the iteration direction
+    * @return the iterator
+    */
+   Iterator<E> iterator(L list, boolean reverse);
 
-   public List<String> getChildren(SimpleNode node) {
-      return node.getChildrenIds();
-   }
-
-   public SimpleNode getDescendant(SimpleNode node, String handle) {
-      return node.getDescendant(handle);
-   }
 }

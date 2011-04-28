@@ -17,18 +17,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.diff.stream;
+package org.exoplatform.diff;
+
+import org.exoplatform.diff.hierarchy.HierarchyAdapter;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum StreamChangeType {
+public class SimpleAdapter implements HierarchyAdapter<List<String>, SimpleNode, String> {
 
-   REMOVE,
+   /** . */
+   public static final HierarchyAdapter<List<String>, SimpleNode, String> INSTANCE = new SimpleAdapter();
 
-   SAME,
+   public String getHandle(SimpleNode node) {
+      return node.getId();
+   }
 
-   ADD
+   public List<String> getChildren(SimpleNode node) {
+      return node.getChildrenIds();
+   }
 
+   public SimpleNode getDescendant(SimpleNode node, String handle) {
+      return node.getDescendant(handle);
+   }
 }

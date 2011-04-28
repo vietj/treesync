@@ -19,7 +19,7 @@
 
 package org.exoplatform.diff.hierarchy;
 
-import org.exoplatform.diff.ListAdapter;
+import org.exoplatform.diff.list.ListAdapter;
 
 import java.util.Collections;
 import java.util.Iterator;

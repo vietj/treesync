@@ -21,7 +21,7 @@ package org.exoplatform.diff.hierarchy;
 
 import junit.framework.TestCase;
 import org.exoplatform.diff.JavaUtilListAdapter;
-import org.exoplatform.diff.SimpleModel;
+import org.exoplatform.diff.SimpleAdapter;
 import org.exoplatform.diff.SimpleNode;
 
 import java.util.Comparator;
@@ -36,9 +36,9 @@ public class HierarchyDiffTestCase extends TestCase {
    /** . */
    private final HierarchyDiff<List<String>, SimpleNode, List<String>, SimpleNode, String> diff = new HierarchyDiff<List<String>, SimpleNode, List<String>, SimpleNode, String>(
          new JavaUtilListAdapter<String>(),
-         SimpleModel.INSTANCE,
+         SimpleAdapter.INSTANCE,
          new JavaUtilListAdapter<String>(),
-         SimpleModel.INSTANCE,
+         SimpleAdapter.INSTANCE,
          new Comparator<String>() {
             public int compare(String s1, String s2) {
                return s1.compareTo(s2);

@@ -17,33 +17,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.diff;
-
-import java.util.Iterator;
+package org.exoplatform.diff.hierarchy;
 
 /**
- * An adapter for a list of elements.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
+ * @version $Revision$
  */
-public interface ListAdapter<L, E> {
+public interface HierarchyAdapter<L, N, H> {
 
-   /**
-    * Returns the number of list elements.
-    *
-    * @param list the list
-    * @return the list size
-    */
-   int size(L list);
+   H getHandle(N node);
 
-   /**
-    * Returns an iterator over the list elements.
-    *
-    *
-    * @param list the list
-    * @param reverse the iteration direction
-    * @return the iterator
-    */
-   Iterator<E> iterator(L list, boolean reverse);
+   L getChildren(N node);
+
+   N getDescendant(N node, H handle);
 
 }

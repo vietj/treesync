@@ -19,9 +19,9 @@
 
 package org.exoplatform.diff.hierarchy;
 
-import org.exoplatform.diff.ListAdapter;
-import org.exoplatform.diff.stream.StreamChangeIterator;
-import org.exoplatform.diff.stream.StreamDiff;
+import org.exoplatform.diff.list.ListAdapter;
+import org.exoplatform.diff.list.ListChangeIterator;
+import org.exoplatform.diff.list.ListDiff;
 
 import java.util.*;
 
@@ -92,7 +92,7 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
       private final N2 dstRoot;
 
       /** . */
-      private StreamChangeIterator<L1, L2, H> it;
+      private ListChangeIterator<L1, L2, H> it;
 
       /** . */
       private Status previous;
@@ -125,7 +125,7 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
          while (true) {
 
             if (frame.previous == Status.INIT) {
-               H id2 = context2.getModel().getHandle(frame.dstRoot);
+               H id2 = context2.getHierarchyAdapter().getHandle(frame.dstRoot);
                if (frame.srcRoot == null)
                {
                   frame.next = Status.ENTER;
@@ -134,7 +134,7 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
                }
                else
                {
-                  H id1 = context1.getModel().getHandle(frame.srcRoot);
+                  H id1 = context1.getHierarchyAdapter().getHandle(frame.srcRoot);
                   if (diff.comparator.compare(id1, id2) != 0) {
                      frame.next = Status.ERROR;
                      frame.src = frame.srcRoot;
@@ -167,20 +167,20 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
                L1 children1;
                if (frame.src != null)
                {
-                  children1 = context1.getModel().getChildren(frame.srcRoot);
-                  adapter1 = diff.adapter1;
+                  children1 = context1.getHierarchyAdapter().getChildren(frame.srcRoot);
+                  adapter1 = diff.listAdapter1;
                }
                else
                {
                   children1 = null;
                   adapter1 = EmptyListAdapter.get();
                }
-               L2 children2 = context2.getModel().getChildren(frame.dstRoot);
+               L2 children2 = context2.getHierarchyAdapter().getChildren(frame.dstRoot);
                frame.srcIt = adapter1.iterator(children1, false);
-               frame.dstIt = diff.adapter2.iterator(children2, false);
-               frame.it = new StreamDiff(
+               frame.dstIt = diff.listAdapter2.iterator(children2, false);
+               frame.it = new ListDiff<L1, L2, H>(
                      adapter1,
-                     diff.adapter2,
+                     diff.listAdapter2,
                      diff.comparator).iterator(children1, children2);
             } else {
                // Nothing
@@ -198,7 +198,7 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
                      frame.dstIt.next();
                      H addedHandle = frame.it.getElement();
                      N2 added = context2.findByHandle(addedHandle);
-                     H addedId = context2.getModel().getHandle(added);
+                     H addedId = context2.getHierarchyAdapter().getHandle(added);
                      N1 a = context1.findByHandle(addedId);
                      if (a != null) {
                         frame.next = Status.MOVED_IN;
@@ -214,7 +214,7 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
                      frame.srcIt.next();
                      H removedHandle = frame.it.getElement();
                      N1 removed = context1.findByHandle(removedHandle);
-                     H removedId = context1.getModel().getHandle(removed);
+                     H removedId = context1.getHierarchyAdapter().getHandle(removed);
                      N2 b = context2.findByHandle(removedId);
                      if (b != null) {
                         frame.next = Status.MOVED_OUT;

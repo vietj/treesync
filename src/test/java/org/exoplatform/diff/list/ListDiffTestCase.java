@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.diff.stream;
+package org.exoplatform.diff.list;
 
 import junit.framework.TestCase;
 import org.exoplatform.diff.JavaUtilListAdapter;
@@ -29,7 +29,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class StreamDiffTestCase extends TestCase {
+public class ListDiffTestCase extends TestCase {
 
    private static List<Character> chars(String s) {
       Character[] chars = new Character[s.length()];
@@ -39,14 +39,14 @@ public class StreamDiffTestCase extends TestCase {
       return Arrays.asList(chars);
    }
 
-   private StreamChangeIterator<List<Character>, List<Character>, Character> diff(String s1, String s2) {
+   private ListChangeIterator<List<Character>, List<Character>, Character> diff(String s1, String s2) {
       List<Character> c1 = chars(s1);
       List<Character> c2 = chars(s2);
-      return new StreamDiff<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>()).iterator(c1, c2);
+      return new ListDiff<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>()).iterator(c1, c2);
    }
 
    public void test0() {
-      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("", "");
+      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("", "");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
       assertFalse(it.hasNext());
@@ -54,10 +54,10 @@ public class StreamDiffTestCase extends TestCase {
    }
 
    public void test1() {
-      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("", "a");
+      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("", "a");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(StreamChangeType.ADD, it.next());
+      assertEquals(ListChangeType.ADD, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
@@ -66,10 +66,10 @@ public class StreamDiffTestCase extends TestCase {
    }
 
    public void test2() {
-      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "");
+      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(StreamChangeType.REMOVE, it.next());
+      assertEquals(ListChangeType.REMOVE, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(0, it.getIndex2());
@@ -78,10 +78,10 @@ public class StreamDiffTestCase extends TestCase {
    }
 
    public void test3() {
-      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "a");
+      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "a");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(StreamChangeType.SAME, it.next());
+      assertEquals(ListChangeType.SAME, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
@@ -90,14 +90,14 @@ public class StreamDiffTestCase extends TestCase {
    }
 
    public void test4() {
-      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "b");
+      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "b");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(StreamChangeType.ADD, it.next());
+      assertEquals(ListChangeType.ADD, it.next());
       assertEquals('b', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(StreamChangeType.REMOVE, it.next());
+      assertEquals(ListChangeType.REMOVE, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
@@ -106,14 +106,14 @@ public class StreamDiffTestCase extends TestCase {
    }
 
    public void test5() {
-      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("", "ab");
+      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("", "ab");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(StreamChangeType.ADD, it.next());
+      assertEquals(ListChangeType.ADD, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(StreamChangeType.ADD, it.next());
+      assertEquals(ListChangeType.ADD, it.next());
       assertEquals('b', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(2, it.getIndex2());
@@ -122,26 +122,26 @@ public class StreamDiffTestCase extends TestCase {
    }
 
    public void test6() {
-      StreamChangeIterator<List<Character>, List<Character>, Character> it = diff("abc", "dbe");
+      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("abc", "dbe");
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
-      assertEquals(StreamChangeType.ADD, it.next());
+      assertEquals(ListChangeType.ADD, it.next());
       assertEquals('d', (char) it.getElement());
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(StreamChangeType.REMOVE, it.next());
+      assertEquals(ListChangeType.REMOVE, it.next());
       assertEquals('a', (char) it.getElement());
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
-      assertEquals(StreamChangeType.SAME, it.next());
+      assertEquals(ListChangeType.SAME, it.next());
       assertEquals('b', (char) it.getElement());
       assertEquals(2, it.getIndex1());
       assertEquals(2, it.getIndex2());
-      assertEquals(StreamChangeType.ADD, it.next());
+      assertEquals(ListChangeType.ADD, it.next());
       assertEquals(2, it.getIndex1());
       assertEquals(3, it.getIndex2());
       assertEquals('e', (char) it.getElement());
-      assertEquals(StreamChangeType.REMOVE, it.next());
+      assertEquals(ListChangeType.REMOVE, it.next());
       assertEquals('c', (char) it.getElement());
       assertEquals(3, it.getIndex1());
       assertEquals(3, it.getIndex2());
@@ -153,8 +153,8 @@ public class StreamDiffTestCase extends TestCase {
    public void testWikipedia() {
       List<Character> c1 = chars("UXWAJZM");
       List<Character> c2 = chars("ZUAYJMX");
-      StreamDiff<List<Character>, List<Character>, Character> seq = new StreamDiff<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>());
-      StreamChangeIterator i = seq.iterator(c1, c2);
+      ListDiff<List<Character>, List<Character>, Character> seq = new ListDiff<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>());
+      ListChangeIterator i = seq.iterator(c1, c2);
 
       // Force a load because it's lazy
       i.hasNext();

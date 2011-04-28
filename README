@@ -1,6 +1,6 @@
 A framework that performs a diff on objects, two implementations are done:
 
-- stream : compare two streams of objects
+- list : compare two lists of objects
 - hierarchy : compare two hierarchies of objects
 
 Comparison is based on the Longest Common Subsequence (LCS) algorithm as explained here

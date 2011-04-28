@@ -19,7 +19,7 @@
 
 package org.exoplatform.diff.hierarchy;
 
-import org.exoplatform.diff.ListAdapter;
+import org.exoplatform.diff.list.ListAdapter;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,19 +28,19 @@ import org.exoplatform.diff.ListAdapter;
 public class HierarchyContext<L, N, H> {
 
    /** . */
-   final ListAdapter<L, H> adapter;
+   final ListAdapter<L, H> listAdapter;
 
    /** . */
-   final HierarchyModel<L, N, H> model;
+   final HierarchyAdapter<L, N, H> hierarchyAdapter;
 
    /** . */
    final N root;
 
-   public HierarchyContext(ListAdapter<L, H> adapter, HierarchyModel<L, N, H> model, N root) throws NullPointerException {
-      if (adapter == null) {
+   public HierarchyContext(ListAdapter<L, H> listAdapter, HierarchyAdapter<L, N, H> hierarchyAdapter, N root) throws NullPointerException {
+      if (listAdapter == null) {
          throw new NullPointerException();
       }
-      if (model == null) {
+      if (hierarchyAdapter == null) {
          throw new NullPointerException();
       }
       if (root == null) {
@@ -48,13 +48,13 @@ public class HierarchyContext<L, N, H> {
       }
 
       //
-      this.adapter = adapter;
-      this.model = model;
+      this.listAdapter = listAdapter;
+      this.hierarchyAdapter = hierarchyAdapter;
       this.root = root;
    }
 
-   public HierarchyModel<L, N, H> getModel() {
-      return model;
+   public HierarchyAdapter<L, N, H> getHierarchyAdapter() {
+      return hierarchyAdapter;
    }
 
    public N getRoot() {
@@ -62,6 +62,6 @@ public class HierarchyContext<L, N, H> {
    }
 
    public N findByHandle(H handle) {
-      return model.getDescendant(root, handle);
+      return hierarchyAdapter.getDescendant(root, handle);
    }
 }

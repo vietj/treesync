@@ -17,9 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.diff.stream;
-
-import org.exoplatform.diff.ListAdapter;
+package org.exoplatform.diff.list;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -27,7 +25,7 @@ import java.util.Iterator;
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
-public class StreamDiff<L1, L2, E> {
+public class ListDiff<L1, L2, E> {
 
    /** . */
    private static final int[] EMPTY = new int[0];
@@ -50,14 +48,14 @@ public class StreamDiff<L1, L2, E> {
    /** . */
    int n;
 
-   public StreamDiff(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2, Comparator<E> comparator) {
+   public ListDiff(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2, Comparator<E> comparator) {
       this.adapter1 = adapter1;
       this.adapter2 = adapter2;
       this.comparator = comparator;
       this.matrix = EMPTY;
    }
 
-   public StreamDiff(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
+   public ListDiff(ListAdapter<L1, E> adapter1, ListAdapter<L2, E> adapter2) {
       this(adapter1, adapter2, null);
    }
 
@@ -116,8 +114,8 @@ public class StreamDiff<L1, L2, E> {
       }
    }
 
-   public final StreamChangeIterator<L1, L2, E> iterator(L1 elements1, L2 elements2) {
-      return new StreamChangeIterator<L1, L2, E>(this, elements1, elements2);
+   public final ListChangeIterator<L1, L2, E> iterator(L1 elements1, L2 elements2) {
+      return new ListChangeIterator<L1, L2, E>(this, elements1, elements2);
    }
 
    @Override

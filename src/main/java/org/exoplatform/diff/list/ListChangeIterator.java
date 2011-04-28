@@ -17,19 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.exoplatform.diff.stream;
+package org.exoplatform.diff.list;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Iterates over a stream of {@link StreamChangeType} computed from two stream of  objects. The implementation
- * is optimized to use the LCS algorithm only when needed, for trivial streams no LCS computation should be
+ * Iterates over a list of {@link ListChangeType} computed from two list of  objects. The implementation
+ * is optimized to use the LCS algorithm only when needed, for trivial list no LCS computation should be
  * required.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
-public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeType> {
+public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
 
    /** . */
    private static final int TRIVIAL_MODE = 0;
@@ -38,7 +38,7 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
    private static final int LCS_MODE = 1;
 
    /** . */
-   StreamDiff<L1, L2, E> diff;
+   ListDiff<L1, L2, E> diff;
 
    /** . */
    private final L1 elements1;
@@ -68,7 +68,7 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
    private E element;
 
    /** . */
-   private StreamChangeType type;
+   private ListChangeType type;
 
    /** . */
    private int mode;
@@ -76,7 +76,7 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
    /** . */
    private boolean buffered;
 
-   StreamChangeIterator(StreamDiff<L1, L2, E> diff, L1 elements1, L2 elements2) {
+   ListChangeIterator(ListDiff<L1, L2, E> diff, L1 elements1, L2 elements2) {
       this.diff = diff;
       this.elements1 = elements1;
       this.elements2 = elements2;
@@ -127,7 +127,7 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
             if (next1 != null) {
                if (next2 != null) {
                   if (diff.equals(next1, next2)) {
-                     type = StreamChangeType.SAME;
+                     type = ListChangeType.SAME;
                      element = next1;
                      buffered = true;
                      next1();
@@ -137,14 +137,14 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
                      mode = LCS_MODE;
                   }
                } else {
-                  type = StreamChangeType.REMOVE;
+                  type = ListChangeType.REMOVE;
                   element = next1;
                   buffered = true;
                   next1();
                }
             } else {
                if (next2 != null) {
-                  type = StreamChangeType.ADD;
+                  type = ListChangeType.ADD;
                   element = next2;
                   buffered = true;
                   next2();
@@ -159,7 +159,7 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
             int i = diff.adapter1.size(elements1) - index1;
             int j = diff.adapter2.size(elements2) - index2;
             if (i > 0 && j > 0 && diff.equals(elt1 = next1, elt2 = next2)) {
-               type = StreamChangeType.SAME;
+               type = ListChangeType.SAME;
                element = elt1;
                next1();
                next2();
@@ -168,12 +168,12 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
                int index1 = i + (j - 1) * diff.m;
                int index2 = i - 1 + j * diff.m;
                if (j > 0 && (i == 0 || diff.matrix[index1] >= diff.matrix[index2])) {
-                  type = StreamChangeType.ADD;
+                  type = ListChangeType.ADD;
                   element = elt2 == null ? next2 : elt2;
                   next2();
                   buffered = true;
                } else if (i > 0 && (j == 0 || diff.matrix[index1] < diff.matrix[index2])) {
-                  type = StreamChangeType.REMOVE;
+                  type = ListChangeType.REMOVE;
                   element = elt1 == null ? next1 : elt1;
                   next1();
                   buffered = true;
@@ -191,7 +191,7 @@ public class StreamChangeIterator<L1, L2, E> implements Iterator<StreamChangeTyp
       return buffered;
    }
 
-   public StreamChangeType next() {
+   public ListChangeType next() {
       if (!hasNext()) {
          throw new NoSuchElementException();
       } else {
