@@ -91,11 +91,13 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
    private int n;
 
    ListChangeIterator(ListDiff<L1, L2, E> diff, L1 elements1, L2 elements2) {
+
+
       this.diff = diff;
       this.elements1 = elements1;
       this.elements2 = elements2;
-      this.it1 = diff.adapter1.iterator(elements1, false);
-      this.it2 = diff.adapter2.iterator(elements2, false);
+      this.it1 = elements1 != null ? diff.adapter1.iterator(elements1, false) : null;
+      this.it2 = elements2 != null ? diff.adapter2.iterator(elements2, false) : null;
       this.mode = TRIVIAL_MODE;
 
       //
@@ -108,10 +110,10 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
       this.element = null;
 
       //
-      if (it1.hasNext()) {
+      if (it1 != null && it1.hasNext()) {
          next1 = it1.next();
       }
-      if (it2.hasNext()) {
+      if (it2 != null && it2.hasNext()) {
          next2 = it2.next();
       }
 
@@ -123,7 +125,7 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
 
    private void next1() {
       index1++;
-      if (it1.hasNext()) {
+      if (it1 != null && it1.hasNext()) {
          next1 = it1.next();
       } else {
          next1 = null;
@@ -132,7 +134,7 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
 
    private void next2() {
       index2++;
-      if (it2.hasNext()) {
+      if (it2 != null && it2.hasNext()) {
          next2 = it2.next();
       } else {
          next2 = null;

@@ -32,11 +32,28 @@ import java.util.List;
 public class ListDiffTestCase extends TestCase {
 
    private static List<Character> chars(String s) {
-      Character[] chars = new Character[s.length()];
-      for (int i = 0; i < chars.length; i++) {
-         chars[i] = s.charAt(i);
+      if (s == null) {
+         return null;
+      } else {
+         Character[] chars = new Character[s.length()];
+         for (int i = 0; i < chars.length; i++) {
+            chars[i] = s.charAt(i);
+         }
+         return Arrays.asList(chars);
       }
-      return Arrays.asList(chars);
+   }
+
+   private abstract class Test {
+
+      final void test(String s1, String s2) {
+         List<Character> c1 = chars(s1);
+         List<Character> c2 = chars(s2);
+         ListChangeIterator<List<Character>, List<Character>, Character> it = new ListDiff<List<Character>, List<Character>, Character>(new JavaUtilListAdapter<Character>(), new JavaUtilListAdapter<Character>()).iterator(c1, c2);
+         test(it);
+      }
+
+      abstract void test(ListChangeIterator<List<Character>, List<Character>, Character> it);
+
    }
 
    private ListChangeIterator<List<Character>, List<Character>, Character> diff(String s1, String s2) {
@@ -46,107 +63,141 @@ public class ListDiffTestCase extends TestCase {
    }
 
    public void test0() {
-      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("", "");
-      assertEquals(0, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertFalse(it.hasNext());
-      assertEquals("", it.getMatrix());
+      Test test = new Test() {
+         @Override
+         void test(ListChangeIterator<List<Character>, List<Character>, Character> it) {
+            assertEquals(0, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertFalse(it.hasNext());
+            assertEquals("", it.getMatrix());
+         }
+      };
+      test.test("", "");
+      test.test(null, null);
    }
 
    public void test1() {
-      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("", "a");
-      assertEquals(0, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertEquals(ListChangeType.ADD, it.next());
-      assertEquals('a', (char) it.getElement());
-      assertEquals(0, it.getIndex1());
-      assertEquals(1, it.getIndex2());
-      assertFalse(it.hasNext());
-      assertEquals("", it.getMatrix());
+      Test test = new Test() {
+         @Override
+         void test(ListChangeIterator<List<Character>, List<Character>, Character> it) {
+            assertEquals(0, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertEquals(ListChangeType.ADD, it.next());
+            assertEquals('a', (char) it.getElement());
+            assertEquals(0, it.getIndex1());
+            assertEquals(1, it.getIndex2());
+            assertFalse(it.hasNext());
+            assertEquals("", it.getMatrix());
+         }
+      };
+      test.test("", "a");
+      test.test(null, "a");
    }
 
    public void test2() {
-      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "");
-      assertEquals(0, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertEquals(ListChangeType.REMOVE, it.next());
-      assertEquals('a', (char) it.getElement());
-      assertEquals(1, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertFalse(it.hasNext());
-      assertEquals("", it.getMatrix());
+      Test test = new Test() {
+         @Override
+         void test(ListChangeIterator<List<Character>, List<Character>, Character> it) {
+            assertEquals(0, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertEquals(ListChangeType.REMOVE, it.next());
+            assertEquals('a', (char) it.getElement());
+            assertEquals(1, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertFalse(it.hasNext());
+            assertEquals("", it.getMatrix());
+         }
+      };
+      test.test("a", "");
+      test.test("a", null);
    }
 
    public void test3() {
-      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "a");
-      assertEquals(0, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertEquals(ListChangeType.SAME, it.next());
-      assertEquals('a', (char) it.getElement());
-      assertEquals(1, it.getIndex1());
-      assertEquals(1, it.getIndex2());
-      assertFalse(it.hasNext());
-      assertEquals("", it.getMatrix());
+      new Test() {
+         @Override
+         void test(ListChangeIterator<List<Character>, List<Character>, Character> it) {
+            assertEquals(0, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertEquals(ListChangeType.SAME, it.next());
+            assertEquals('a', (char) it.getElement());
+            assertEquals(1, it.getIndex1());
+            assertEquals(1, it.getIndex2());
+            assertFalse(it.hasNext());
+            assertEquals("", it.getMatrix());
+         }
+      }.test("a", "a");
    }
 
    public void test4() {
-      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("a", "b");
-      assertEquals(0, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertEquals(ListChangeType.ADD, it.next());
-      assertEquals('b', (char) it.getElement());
-      assertEquals(0, it.getIndex1());
-      assertEquals(1, it.getIndex2());
-      assertEquals(ListChangeType.REMOVE, it.next());
-      assertEquals('a', (char) it.getElement());
-      assertEquals(1, it.getIndex1());
-      assertEquals(1, it.getIndex2());
-      assertFalse(it.hasNext());
-      assertFalse(it.getMatrix().equals(""));
+      new Test() {
+         @Override
+         void test(ListChangeIterator<List<Character>, List<Character>, Character> it) {
+            assertEquals(0, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertEquals(ListChangeType.ADD, it.next());
+            assertEquals('b', (char) it.getElement());
+            assertEquals(0, it.getIndex1());
+            assertEquals(1, it.getIndex2());
+            assertEquals(ListChangeType.REMOVE, it.next());
+            assertEquals('a', (char) it.getElement());
+            assertEquals(1, it.getIndex1());
+            assertEquals(1, it.getIndex2());
+            assertFalse(it.hasNext());
+            assertFalse(it.getMatrix().equals(""));
+         }
+      }.test("a", "b");
    }
 
    public void test5() {
-      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("", "ab");
-      assertEquals(0, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertEquals(ListChangeType.ADD, it.next());
-      assertEquals('a', (char) it.getElement());
-      assertEquals(0, it.getIndex1());
-      assertEquals(1, it.getIndex2());
-      assertEquals(ListChangeType.ADD, it.next());
-      assertEquals('b', (char) it.getElement());
-      assertEquals(0, it.getIndex1());
-      assertEquals(2, it.getIndex2());
-      assertFalse(it.hasNext());
-      assertEquals("", it.getMatrix());
+      new Test() {
+         @Override
+         void test(ListChangeIterator<List<Character>, List<Character>, Character> it) {
+            assertEquals(0, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertEquals(ListChangeType.ADD, it.next());
+            assertEquals('a', (char) it.getElement());
+            assertEquals(0, it.getIndex1());
+            assertEquals(1, it.getIndex2());
+            assertEquals(ListChangeType.ADD, it.next());
+            assertEquals('b', (char) it.getElement());
+            assertEquals(0, it.getIndex1());
+            assertEquals(2, it.getIndex2());
+            assertFalse(it.hasNext());
+            assertEquals("", it.getMatrix());
+         }
+      }.test("", "ab");
    }
 
    public void test6() {
-      ListChangeIterator<List<Character>, List<Character>, Character> it = diff("abc", "dbe");
-      assertEquals(0, it.getIndex1());
-      assertEquals(0, it.getIndex2());
-      assertEquals(ListChangeType.ADD, it.next());
-      assertEquals('d', (char) it.getElement());
-      assertEquals(0, it.getIndex1());
-      assertEquals(1, it.getIndex2());
-      assertEquals(ListChangeType.REMOVE, it.next());
-      assertEquals('a', (char) it.getElement());
-      assertEquals(1, it.getIndex1());
-      assertEquals(1, it.getIndex2());
-      assertEquals(ListChangeType.SAME, it.next());
-      assertEquals('b', (char) it.getElement());
-      assertEquals(2, it.getIndex1());
-      assertEquals(2, it.getIndex2());
-      assertEquals(ListChangeType.ADD, it.next());
-      assertEquals(2, it.getIndex1());
-      assertEquals(3, it.getIndex2());
-      assertEquals('e', (char) it.getElement());
-      assertEquals(ListChangeType.REMOVE, it.next());
-      assertEquals('c', (char) it.getElement());
-      assertEquals(3, it.getIndex1());
-      assertEquals(3, it.getIndex2());
-      assertFalse(it.hasNext());
-      assertFalse(it.getMatrix().equals(""));
+      new Test() {
+         @Override
+         void test(ListChangeIterator<List<Character>, List<Character>, Character> it) {
+            assertEquals(0, it.getIndex1());
+            assertEquals(0, it.getIndex2());
+            assertEquals(ListChangeType.ADD, it.next());
+            assertEquals('d', (char) it.getElement());
+            assertEquals(0, it.getIndex1());
+            assertEquals(1, it.getIndex2());
+            assertEquals(ListChangeType.REMOVE, it.next());
+            assertEquals('a', (char) it.getElement());
+            assertEquals(1, it.getIndex1());
+            assertEquals(1, it.getIndex2());
+            assertEquals(ListChangeType.SAME, it.next());
+            assertEquals('b', (char) it.getElement());
+            assertEquals(2, it.getIndex1());
+            assertEquals(2, it.getIndex2());
+            assertEquals(ListChangeType.ADD, it.next());
+            assertEquals(2, it.getIndex1());
+            assertEquals(3, it.getIndex2());
+            assertEquals('e', (char) it.getElement());
+            assertEquals(ListChangeType.REMOVE, it.next());
+            assertEquals('c', (char) it.getElement());
+            assertEquals(3, it.getIndex1());
+            assertEquals(3, it.getIndex2());
+            assertFalse(it.hasNext());
+            assertFalse(it.getMatrix().equals(""));
+         }
+      }.test("abc", "dbe");
    }
 
    // See http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
