@@ -32,6 +32,9 @@ import java.util.NoSuchElementException;
 public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
 
    /** . */
+   private static final int[] EMPTY = new int[0];
+
+   /** . */
    private static final int TRIVIAL_MODE = 0;
 
    /** . */
@@ -76,6 +79,17 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
    /** . */
    private boolean buffered;
 
+   // LCS state
+
+   /** . */
+   private int[] matrix;
+
+   /** . */
+   private int m;
+
+   /** . */
+   private int n;
+
    ListChangeIterator(ListDiff<L1, L2, E> diff, L1 elements1, L2 elements2) {
       this.diff = diff;
       this.elements1 = elements1;
@@ -100,6 +114,11 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
       if (it2.hasNext()) {
          next2 = it2.next();
       }
+
+      //
+      this.m = 0;
+      this.n = 0;
+      this.matrix = EMPTY;
    }
 
    private void next1() {
@@ -133,7 +152,7 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
                      next1();
                      next2();
                   } else {
-                     diff.lcs(index1, elements1, elements2);
+                     lcs(index1, elements1, elements2);
                      mode = LCS_MODE;
                   }
                } else {
@@ -165,14 +184,14 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
                next2();
                buffered = true;
             } else {
-               int index1 = i + (j - 1) * diff.m;
-               int index2 = i - 1 + j * diff.m;
-               if (j > 0 && (i == 0 || diff.matrix[index1] >= diff.matrix[index2])) {
+               int index1 = i + (j - 1) * m;
+               int index2 = i - 1 + j * m;
+               if (j > 0 && (i == 0 || matrix[index1] >= matrix[index2])) {
                   type = ListChangeType.ADD;
                   element = elt2 == null ? next2 : elt2;
                   next2();
                   buffered = true;
-               } else if (i > 0 && (j == 0 || diff.matrix[index1] < diff.matrix[index2])) {
+               } else if (i > 0 && (j == 0 || matrix[index1] < matrix[index2])) {
                   type = ListChangeType.REMOVE;
                   element = elt1 == null ? next1 : elt1;
                   next1();
@@ -214,6 +233,60 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
 
    public int getIndex2() {
       return index2;
+   }
+
+   /**
+    * Compute the LCS matrix from the specified offset. It updates the state of this object
+    * with the relevant state. The LCS matrix is computed using the LCS algorithm
+    * (see http://en.wikipedia.org/wiki/Longest_common_subsequence_problem).
+    *
+    * @param offset the offset
+    * @param elements1 the elements 1
+    * @param elements2 the elements 2
+    */
+   private void lcs(int offset, L1 elements1, L2 elements2) {
+      m = 1 + diff.adapter1.size(elements1) - offset;
+      n = 1 + diff.adapter2.size(elements2) - offset;
+
+      //
+      int s = m * n;
+      matrix = new int[s];
+
+      // Compute the lcs matrix
+      Iterator<E> itI = diff.adapter1.iterator(elements1, true);
+      for (int i = 1; i < m; i++) {
+         E abc = itI.next();
+         Iterator<E> itJ = diff.adapter2.iterator(elements2, true);
+         for (int j = 1; j < n; j++) {
+            int index = i + j * m;
+            int v;
+            E def = itJ.next();
+            if (diff.equals(abc, def)) {
+               v = matrix[index - m - 1] + 1;
+            } else {
+               int v1 = matrix[index - 1];
+               int v2 = matrix[index - m];
+               v = v1 < v2 ? v2 : v1;
+            }
+            matrix[index] = v;
+         }
+      }
+   }
+
+   // For unit testing purpose
+   String getMatrix() {
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < m; i++) {
+         sb.append('[');
+         for (int j = 0; j < n; j++) {
+            if (j > 0) {
+               sb.append(',');
+            }
+            sb.append(matrix[i + j * m]);
+         }
+         sb.append("]\n");
+      }
+      return sb.toString();
    }
 }
 

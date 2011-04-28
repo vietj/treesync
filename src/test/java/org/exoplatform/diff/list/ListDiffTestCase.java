@@ -50,7 +50,7 @@ public class ListDiffTestCase extends TestCase {
       assertEquals(0, it.getIndex1());
       assertEquals(0, it.getIndex2());
       assertFalse(it.hasNext());
-      assertEquals(0, it.diff.matrix.length);
+      assertEquals("", it.getMatrix());
    }
 
    public void test1() {
@@ -62,7 +62,7 @@ public class ListDiffTestCase extends TestCase {
       assertEquals(0, it.getIndex1());
       assertEquals(1, it.getIndex2());
       assertFalse(it.hasNext());
-      assertEquals(0, it.diff.matrix.length);
+      assertEquals("", it.getMatrix());
    }
 
    public void test2() {
@@ -74,7 +74,7 @@ public class ListDiffTestCase extends TestCase {
       assertEquals(1, it.getIndex1());
       assertEquals(0, it.getIndex2());
       assertFalse(it.hasNext());
-      assertEquals(0, it.diff.matrix.length);
+      assertEquals("", it.getMatrix());
    }
 
    public void test3() {
@@ -86,7 +86,7 @@ public class ListDiffTestCase extends TestCase {
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
       assertFalse(it.hasNext());
-      assertEquals(0, it.diff.matrix.length);
+      assertEquals("", it.getMatrix());
    }
 
    public void test4() {
@@ -102,7 +102,7 @@ public class ListDiffTestCase extends TestCase {
       assertEquals(1, it.getIndex1());
       assertEquals(1, it.getIndex2());
       assertFalse(it.hasNext());
-      assertTrue(it.diff.matrix.length > 0);
+      assertFalse(it.getMatrix().equals(""));
    }
 
    public void test5() {
@@ -118,7 +118,7 @@ public class ListDiffTestCase extends TestCase {
       assertEquals(0, it.getIndex1());
       assertEquals(2, it.getIndex2());
       assertFalse(it.hasNext());
-      assertEquals(0, it.diff.matrix.length);
+      assertEquals("", it.getMatrix());
    }
 
    public void test6() {
@@ -146,7 +146,7 @@ public class ListDiffTestCase extends TestCase {
       assertEquals(3, it.getIndex1());
       assertEquals(3, it.getIndex2());
       assertFalse(it.hasNext());
-      assertTrue(it.diff.matrix.length > 0);
+      assertFalse(it.getMatrix().equals(""));
    }
 
    // See http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
@@ -169,6 +169,6 @@ public class ListDiffTestCase extends TestCase {
             "[0,1,1,2,2,3,4,4]\n";
 
       //
-      assertEquals(s, seq.toString());
+      assertEquals(s, i.getMatrix());
    }
 }
