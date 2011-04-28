@@ -91,8 +91,6 @@ public class ListChangeIterator<L1, L2, E> implements Iterator<ListChangeType> {
    private int n;
 
    ListChangeIterator(ListDiff<L1, L2, E> diff, L1 elements1, L2 elements2) {
-
-
       this.diff = diff;
       this.elements1 = elements1;
       this.elements2 = elements2;

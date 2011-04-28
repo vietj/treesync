@@ -19,7 +19,6 @@
 
 package org.exoplatform.diff.hierarchy;
 
-import org.exoplatform.diff.list.ListAdapter;
 import org.exoplatform.diff.list.ListChangeIterator;
 import org.exoplatform.diff.list.ListDiff;
 
@@ -42,11 +41,18 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
    /** . */
    private final HierarchyContext<L2, N2, H> context2;
 
+   /** . */
+   private final ListDiff<L1, L2, H> listDiff;
+
    HierarchyChangeIterator(HierarchyDiff<L1, N1, L2, N2, H> diff, HierarchyContext<L1, N1, H> context1, HierarchyContext<L2, N2, H> context2) {
       this.diff = diff;
       this.context1 = context1;
       this.context2 = context2;
       this.frame = new Frame(null, context1.getRoot(), context2.getRoot());
+      this.listDiff = new ListDiff<L1, L2, H>(
+            diff.listAdapter1,
+            diff.listAdapter2,
+            diff.comparator);
    }
 
    /**
@@ -163,25 +169,18 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
                frame = new Frame(frame, frame.src, frame.dst);
                continue;
             } else if (frame.previous == Status.ENTER) {
-               ListAdapter<L1, H> adapter1;
                L1 children1;
-               if (frame.src != null)
-               {
+               if (frame.src != null) {
                   children1 = context1.getHierarchyAdapter().getChildren(frame.srcRoot);
-                  adapter1 = diff.listAdapter1;
+                  frame.srcIt = diff.listAdapter1.iterator(children1, false);
                }
-               else
-               {
+               else {
                   children1 = null;
-                  adapter1 = EmptyListAdapter.get();
+                  frame.srcIt = null;
                }
                L2 children2 = context2.getHierarchyAdapter().getChildren(frame.dstRoot);
-               frame.srcIt = adapter1.iterator(children1, false);
                frame.dstIt = diff.listAdapter2.iterator(children2, false);
-               frame.it = new ListDiff<L1, L2, H>(
-                     adapter1,
-                     diff.listAdapter2,
-                     diff.comparator).iterator(children1, children2);
+               frame.it = listDiff.iterator(children1, children2);
             } else {
                // Nothing
             }
