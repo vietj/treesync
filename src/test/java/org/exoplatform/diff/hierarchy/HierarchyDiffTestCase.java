@@ -356,4 +356,51 @@ public class HierarchyDiffTestCase extends TestCase {
       assertSame(node2, it.getDestination());
       assertFalse(it.hasNext());
    }
+
+   public void testMoveObservation() throws Exception
+   {
+      Node node1 = new Node();
+      Node a1 = node1.addChild();
+      Node b1 = node1.addChild();
+      Node c1 = a1.addChild();
+
+      //
+      Node node2 = node1.clone();
+      Node a2 = node2.getChild(a1.getId());
+      Node b2 = node2.getChild(b1.getId());
+      Node c2 = a2.getChild(c1.getId());
+      b2.addChild(c2);
+
+      //
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it1 = diff.iterator(b1, b2);
+      assertEquals(HierarchyChangeType.ENTER, it1.next());
+      assertSame(b1, it1.getSource());
+      assertSame(b2, it1.getDestination());
+      assertEquals(HierarchyChangeType.ADDED, it1.next());
+      assertSame(null, it1.getSource());
+      assertSame(c2, it1.getDestination());
+      assertEquals(HierarchyChangeType.ENTER, it1.next());
+      assertSame(null, it1.getSource());
+      assertSame(c2, it1.getDestination());
+      assertEquals(HierarchyChangeType.LEAVE, it1.next());
+      assertSame(null, it1.getSource());
+      assertSame(c2, it1.getDestination());
+      assertEquals(HierarchyChangeType.LEAVE, it1.next());
+      assertSame(b1, it1.getSource());
+      assertSame(b2, it1.getDestination());
+      assertFalse(it1.hasNext());
+
+      //
+      HierarchyChangeIterator<List<String>, Node, List<String>, Node, String> it2 = diff.iterator(a1, a2);
+      assertEquals(HierarchyChangeType.ENTER, it2.next());
+      assertSame(a1, it2.getSource());
+      assertSame(a2, it2.getDestination());
+      assertEquals(HierarchyChangeType.REMOVED, it2.next());
+      assertSame(c1, it2.getSource());
+      assertSame(null, it2.getDestination());
+      assertEquals(HierarchyChangeType.LEAVE, it2.next());
+      assertSame(a1, it2.getSource());
+      assertSame(a2, it2.getDestination());
+      assertFalse(it2.hasNext());
+   }
 }
