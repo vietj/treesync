@@ -64,6 +64,8 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
 
       ENTER(HierarchyChangeType.ENTER),
 
+      KEEP(HierarchyChangeType.KEEP),
+
       ADDED(HierarchyChangeType.ADDED),
 
       REMOVED(HierarchyChangeType.REMOVED),
@@ -162,6 +164,9 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
                } else {
                   break;
                }
+            } else if (frame.previous == Status.KEEP) {
+               frame = new Frame(frame, frame.src, frame.dst);
+               continue;
             } else if (frame.previous == Status.MOVED_IN) {
                frame = new Frame(frame, frame.src, frame.dst);
                continue;
@@ -191,8 +196,10 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
                   case SAME:
                      N1 next1 = context1.findByHandle(frame.srcIt.next());
                      N2 next2 = context2.findByHandle(frame.dstIt.next());
-                     frame = new Frame(frame, next1, next2);
-                     continue;
+                     frame.next = Status.KEEP;
+                     frame.src = next1;
+                     frame.dst = next2;
+                     break;
                   case ADD:
                      frame.dstIt.next();
                      H addedHandle = frame.it.getElement();

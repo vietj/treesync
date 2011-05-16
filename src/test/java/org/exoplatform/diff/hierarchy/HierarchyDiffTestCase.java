@@ -77,6 +77,9 @@ public class HierarchyDiffTestCase extends TestCase {
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
+      assertEquals(HierarchyChangeType.KEEP, it.next());
+      assertSame(child1, it.getSource());
+      assertSame(child2, it.getDestination());
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(child1, it.getSource());
       assertSame(child2, it.getDestination());
@@ -177,6 +180,9 @@ public class HierarchyDiffTestCase extends TestCase {
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
+      assertEquals(HierarchyChangeType.KEEP, it.next());
+      assertSame(a1, it.getSource());
+      assertSame(a2, it.getDestination());
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(a1, it.getSource());
       assertSame(a2, it.getDestination());
@@ -186,6 +192,9 @@ public class HierarchyDiffTestCase extends TestCase {
       assertEquals(HierarchyChangeType.LEAVE, it.next());
       assertSame(a1, it.getSource());
       assertSame(a2, it.getDestination());
+      assertEquals(HierarchyChangeType.KEEP, it.next());
+      assertSame(b1, it.getSource());
+      assertSame(b2, it.getDestination());
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(b1, it.getSource());
       assertSame(b2, it.getDestination());
@@ -224,6 +233,9 @@ public class HierarchyDiffTestCase extends TestCase {
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
+      assertEquals(HierarchyChangeType.KEEP, it.next());
+      assertSame(a1, it.getSource());
+      assertSame(a2, it.getDestination());
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(a1, it.getSource());
       assertSame(a2, it.getDestination());
@@ -233,6 +245,9 @@ public class HierarchyDiffTestCase extends TestCase {
       assertEquals(HierarchyChangeType.LEAVE, it.next());
       assertSame(a1, it.getSource());
       assertSame(a2, it.getDestination());
+      assertEquals(HierarchyChangeType.KEEP, it.next());
+      assertSame(b1, it.getSource());
+      assertSame(b2, it.getDestination());
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(b1, it.getSource());
       assertSame(b2, it.getDestination());
@@ -288,6 +303,9 @@ public class HierarchyDiffTestCase extends TestCase {
       assertEquals(HierarchyChangeType.REMOVED, it.next());
       assertSame(a1, it.getSource());
       assertSame(null, it.getDestination());
+      assertEquals(HierarchyChangeType.KEEP, it.next());
+      assertSame(c1, it.getSource());
+      assertSame(c2, it.getDestination());
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(c1, it.getSource());
       assertSame(c2, it.getDestination());
@@ -324,6 +342,9 @@ public class HierarchyDiffTestCase extends TestCase {
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(node1, it.getSource());
       assertSame(node2, it.getDestination());
+      assertEquals(HierarchyChangeType.KEEP, it.next());
+      assertSame(a1, it.getSource());
+      assertSame(a2, it.getDestination());
       assertEquals(HierarchyChangeType.ENTER, it.next());
       assertSame(a1, it.getSource());
       assertSame(a2, it.getDestination());
