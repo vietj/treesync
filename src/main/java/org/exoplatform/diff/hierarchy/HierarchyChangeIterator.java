@@ -259,18 +259,18 @@ public class HierarchyChangeIterator<L1, N1, L2, N2, H> implements Iterator<Hier
    }
 
    public void skip() {
-      switch (frame.previous) {
-         case MOVED_OUT:
-            // No need to do something
-            break;
-         case ADDED:
-         case KEEP:
-         case REMOVED:
-         case MOVED_IN:
-            frame.previous = Status.RESUME;
-            break;
-         default:
-            throw new IllegalStateException("Cannot skip when in state " + frame.previous);
+      if (frame.previous == HierarchyChangeIterator.Status.ENTER) {
+
+         // A bit hackish as it bypass the main loop
+         // the proper way to do it would be to introduce a SKIP status
+         // and properly react to it to update the state machine
+         // but for now it will do
+
+         frame.next = Status.LEAVE;
+         frame.src = frame.srcRoot;
+         frame.dst = frame.dstRoot;
+      } else {
+         throw new IllegalStateException("Cannot skip when in state " + frame.previous);
       }
    }
 
