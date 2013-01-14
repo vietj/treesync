@@ -25,10 +25,10 @@ package org.exoplatform.diff.list;
  */
 public enum ListChangeType {
 
-   REMOVE,
+    REMOVE,
 
-   SAME,
+    SAME,
 
-   ADD
+    ADD
 
 }

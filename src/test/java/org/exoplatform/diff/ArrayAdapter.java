@@ -19,55 +19,61 @@
 
 package org.exoplatform.diff;
 
-import org.exoplatform.diff.list.ListAdapter;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import org.exoplatform.diff.list.ListAdapter;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
 public class ArrayAdapter<E> implements ListAdapter<E[], E> {
 
-   public int size(E[] list) {
-      return list.length;
-   }
+    public int size(E[] list) {
+        return list.length;
+    }
 
-   public Iterator<E> iterator(final E[] list, boolean reverse) {
-      if (reverse) {
-         return new Iterator<E>() {
-            int count = list.length;
-            public boolean hasNext() {
-               return count > 0;
-            }
-            public E next() {
-               if (!hasNext()) {
-                  throw new NoSuchElementException();
-               } else {
-                  return list[--count];
-               }
-            }
-            public void remove() {
-               throw new UnsupportedOperationException();
-            }
-         };
-      } else {
-         return new Iterator<E>() {
-            int count = 0;
-            public boolean hasNext() {
-               return count < list.length;
-            }
-            public E next() {
-               if (!hasNext()) {
-                  throw new NoSuchElementException();
-               } else {
-                  return list[count++];
-               }
-            }
-            public void remove() {
-               throw new UnsupportedOperationException();
-            }
-         };
-      }
-   }
+    public Iterator<E> iterator(final E[] list, boolean reverse) {
+        if (reverse) {
+            return new Iterator<E>() {
+                int count = list.length;
+
+                public boolean hasNext() {
+                    return count > 0;
+                }
+
+                public E next() {
+                    if (!hasNext()) {
+                        throw new NoSuchElementException();
+                    } else {
+                        return list[--count];
+                    }
+                }
+
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        } else {
+            return new Iterator<E>() {
+                int count = 0;
+
+                public boolean hasNext() {
+                    return count < list.length;
+                }
+
+                public E next() {
+                    if (!hasNext()) {
+                        throw new NoSuchElementException();
+                    } else {
+                        return list[count++];
+                    }
+                }
+
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+    }
 }

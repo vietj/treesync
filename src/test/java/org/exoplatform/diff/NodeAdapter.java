@@ -19,9 +19,9 @@
 
 package org.exoplatform.diff;
 
-import org.exoplatform.diff.hierarchy.HierarchyAdapter;
-
 import java.util.List;
+
+import org.exoplatform.diff.hierarchy.HierarchyAdapter;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -29,18 +29,18 @@ import java.util.List;
  */
 public class NodeAdapter implements HierarchyAdapter<List<String>, Node, String> {
 
-   /** . */
-   public static final HierarchyAdapter<List<String>, Node, String> INSTANCE = new NodeAdapter();
+    /** . */
+    public static final HierarchyAdapter<List<String>, Node, String> INSTANCE = new NodeAdapter();
 
-   public String getHandle(Node node) {
-      return node.getId();
-   }
+    public String getHandle(Node node) {
+        return node.getId();
+    }
 
-   public List<String> getChildren(Node node) {
-      return node.getChildrenIds();
-   }
+    public List<String> getChildren(Node node) {
+        return node.getChildrenIds();
+    }
 
-   public Node getDescendant(Node node, String handle) {
-      return node.getDescendant(handle);
-   }
+    public Node getDescendant(Node node, String handle) {
+        return node.getDescendant(handle);
+    }
 }

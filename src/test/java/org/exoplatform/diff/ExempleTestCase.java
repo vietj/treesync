@@ -19,35 +19,35 @@
 
 package org.exoplatform.diff;
 
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.exoplatform.diff.list.ListChangeIterator;
 import org.exoplatform.diff.list.ListChangeType;
 import org.exoplatform.diff.list.ListDiff;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
 public class ExempleTestCase extends TestCase {
 
-   public void testList() {
-      String[] source = new String[]{"banana","strawberry","cherry"};
-      List<String> destintation = Arrays.asList("apple", "banana", "raspberry","cherry");
-      ListDiff<String[], List<String>, String> diff = new ListDiff<String[], List<String>, String>(new ArrayAdapter<String>(), new JavaUtilListAdapter<String>());
-      ListChangeIterator<String[], List<String>, String> it = diff.iterator(source, destintation);
-      Assert.assertEquals(ListChangeType.ADD, it.next());
-      assertEquals("apple", it.getElement());
-      assertEquals(ListChangeType.SAME, it.next());
-      assertEquals("banana", it.getElement());
-      assertEquals(ListChangeType.ADD, it.next());
-      assertEquals("raspberry", it.getElement());
-      assertEquals(ListChangeType.REMOVE, it.next());
-      assertEquals("strawberry", it.getElement());
-      assertEquals(ListChangeType.SAME, it.next());
-      assertEquals("cherry", it.getElement());
-      assertFalse(it.hasNext());
-   }
+    public void testList() {
+        String[] source = new String[]{"banana", "strawberry", "cherry"};
+        List<String> destintation = Arrays.asList("apple", "banana", "raspberry", "cherry");
+        ListDiff<String[], List<String>, String> diff = new ListDiff<String[], List<String>, String>(new ArrayAdapter<String>(), new JavaUtilListAdapter<String>());
+        ListChangeIterator<String[], List<String>, String> it = diff.iterator(source, destintation);
+        Assert.assertEquals(ListChangeType.ADD, it.next());
+        assertEquals("apple", it.getElement());
+        assertEquals(ListChangeType.SAME, it.next());
+        assertEquals("banana", it.getElement());
+        assertEquals(ListChangeType.ADD, it.next());
+        assertEquals("raspberry", it.getElement());
+        assertEquals(ListChangeType.REMOVE, it.next());
+        assertEquals("strawberry", it.getElement());
+        assertEquals(ListChangeType.SAME, it.next());
+        assertEquals("cherry", it.getElement());
+        assertFalse(it.hasNext());
+    }
 }

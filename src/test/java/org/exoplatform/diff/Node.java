@@ -31,140 +31,140 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Node {
 
-  /** . */
-  private static final AtomicInteger generator = new AtomicInteger();
+    /** . */
+    private static final AtomicInteger generator = new AtomicInteger();
 
-  /** . */
-  private Node parent;
+    /** . */
+    private Node parent;
 
-  /** . */
-  private final String id;
+    /** . */
+    private final String id;
 
-  /** . */
-  private final List<Node> children;
+    /** . */
+    private final List<Node> children;
 
-  private Node(Node that) {
+    private Node(Node that) {
 
-    ArrayList<Node> children = new ArrayList<Node>(that.children.size());
-    for (Node thatChild : that.children) {
-      Node child = new Node(thatChild);
-      child.parent = this;
-      children.add(child);
-    }
-
-    //
-    this.id = that.id;
-    this.children = children;
-    this.parent = null;
-  }
-
-  public Node()
-  {
-    this.id = "" + generator.incrementAndGet();
-    this.children = new ArrayList<Node>();
-    this.parent = null;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-   public Node getParent() {
-      return parent;
-   }
-
-   public Node addChild() {
-    Node child = new Node();
-    children.add(child);
-    child.parent = this;
-    return child;
-  }
-
-  public Node getRoot() {
-    return parent == null ? this : parent.getRoot();
-  }
-
-  public void addChild(Node child) {
-    if (child.parent == null) {
-      throw new AssertionError();
-    }
-    if (getRoot() != child.getRoot()) {
-      throw new AssertionError();
-    }
-    for (Iterator<Node> i = child.parent.children.iterator();i.hasNext();) {
-      Node sibling = i.next();
-      if (sibling == child) {
-        i.remove();
-        child.parent = null;
-        break;
-      }
-    }
-    child.parent = this;
-    children.add(child);
-  }
-
-  public Node getChild(String id) {
-    for (Node child : children) {
-      if (child.id.equals(id)) {
-        return child;
-      }
-    }
-    return null;
-  }
-
-   public Node getDescendant(String id) {
-     Node descendant = getChild(id);
-     if (descendant == null) {
-       for (Node child : children) {
-         descendant = child.getDescendant(id);
-         if (descendant != null) {
-           break;
-         }
-       }
-     }
-     return descendant;
-   }
-
-  public void destroy() {
-    if (parent != null) {
-      for (Iterator<Node> i = parent.children.iterator();i.hasNext();) {
-        Node sibling = i.next();
-        if (sibling == this) {
-          i.remove();
-          parent = null;
+        ArrayList<Node> children = new ArrayList<Node>(that.children.size());
+        for (Node thatChild : that.children) {
+            Node child = new Node(thatChild);
+            child.parent = this;
+            children.add(child);
         }
-      }
+
+        //
+        this.id = that.id;
+        this.children = children;
+        this.parent = null;
     }
-    for (Node child : children) {
-      child.parent = null;
+
+    public Node() {
+        this.id = "" + generator.incrementAndGet();
+        this.children = new ArrayList<Node>();
+        this.parent = null;
     }
-  }
 
-  private final List<String> childrenIds = new AbstractList<String>() {
-     @Override
-     public String get(int index) {
-       return children.get(index).id;
-     }
-     @Override
-     public int size() {
-        return children.size();
-     }
-  };
+    public String getId() {
+        return id;
+    }
 
-  public List<String> getChildrenIds() {
-    return childrenIds;
-  }
+    public Node getParent() {
+        return parent;
+    }
 
-  public List<Node> getChildren() {
-    return new ArrayList<Node>(children);
-  }
+    public Node addChild() {
+        Node child = new Node();
+        children.add(child);
+        child.parent = this;
+        return child;
+    }
 
-  public Node clone() {
-    return new Node(this);
-  }
+    public Node getRoot() {
+        return parent == null ? this : parent.getRoot();
+    }
 
-  @Override
-  public String toString() {
-    return "SimpleNode[id=" + id + ",@=" + System.identityHashCode(this) + "]";
-  }
+    public void addChild(Node child) {
+        if (child.parent == null) {
+            throw new AssertionError();
+        }
+        if (getRoot() != child.getRoot()) {
+            throw new AssertionError();
+        }
+        for (Iterator<Node> i = child.parent.children.iterator(); i.hasNext(); ) {
+            Node sibling = i.next();
+            if (sibling == child) {
+                i.remove();
+                child.parent = null;
+                break;
+            }
+        }
+        child.parent = this;
+        children.add(child);
+    }
+
+    public Node getChild(String id) {
+        for (Node child : children) {
+            if (child.id.equals(id)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    public Node getDescendant(String id) {
+        Node descendant = getChild(id);
+        if (descendant == null) {
+            for (Node child : children) {
+                descendant = child.getDescendant(id);
+                if (descendant != null) {
+                    break;
+                }
+            }
+        }
+        return descendant;
+    }
+
+    public void destroy() {
+        if (parent != null) {
+            for (Iterator<Node> i = parent.children.iterator(); i.hasNext(); ) {
+                Node sibling = i.next();
+                if (sibling == this) {
+                    i.remove();
+                    parent = null;
+                }
+            }
+        }
+        for (Node child : children) {
+            child.parent = null;
+        }
+    }
+
+    private final List<String> childrenIds = new AbstractList<String>() {
+        @Override
+        public String get(int index) {
+            return children.get(index).id;
+        }
+
+        @Override
+        public int size() {
+            return children.size();
+        }
+    };
+
+    public List<String> getChildrenIds() {
+        return childrenIds;
+    }
+
+    public List<Node> getChildren() {
+        return new ArrayList<Node>(children);
+    }
+
+    public Node clone() {
+        return new Node(this);
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleNode[id=" + id + ",@=" + System.identityHashCode(this) + "]";
+    }
 }

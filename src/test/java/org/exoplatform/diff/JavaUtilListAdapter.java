@@ -19,37 +19,39 @@
 
 package org.exoplatform.diff;
 
-import org.exoplatform.diff.list.ListAdapter;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import org.exoplatform.diff.list.ListAdapter;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  */
 public class JavaUtilListAdapter<E> implements ListAdapter<List<E>, E> {
 
-   public int size(List<E> list) {
-      return list.size();
-   }
+    public int size(List<E> list) {
+        return list.size();
+    }
 
-   public Iterator<E> iterator(List<E> list, boolean reverse) {
-      if (reverse) {
-         final ListIterator<E> it = list.listIterator(list.size());
-         return new Iterator<E>() {
-            public boolean hasNext() {
-               return it.hasPrevious();
-            }
-            public E next() {
-               return it.previous();
-            }
-            public void remove() {
-               throw new UnsupportedOperationException();
-            }
-         };
-      } else {
-         return list.iterator();
-      }
-   }
+    public Iterator<E> iterator(List<E> list, boolean reverse) {
+        if (reverse) {
+            final ListIterator<E> it = list.listIterator(list.size());
+            return new Iterator<E>() {
+                public boolean hasNext() {
+                    return it.hasPrevious();
+                }
+
+                public E next() {
+                    return it.previous();
+                }
+
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        } else {
+            return list.iterator();
+        }
+    }
 }
